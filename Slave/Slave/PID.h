@@ -47,7 +47,7 @@ class PID
 			
 		void Set_Pid(float kP,float kI,float kD);
 		float Compute(int input);
-		float angle_Compute(int input);
+		float distance_Compute(int input);
 		
 }; 
 

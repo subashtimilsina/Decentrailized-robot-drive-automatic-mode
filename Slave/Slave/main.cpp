@@ -11,6 +11,7 @@
 int main(void)
 {
 	initUART0();
+	initUART2();
 	initUART3();
 	init_slave();
 	drive_init();

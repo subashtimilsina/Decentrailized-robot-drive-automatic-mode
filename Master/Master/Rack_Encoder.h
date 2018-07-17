@@ -55,17 +55,17 @@ class Rack_Encoder
 	
 	long int angle;
 	
-	Rack_Encoder():speed(0),pprcount(0){};
+	Rack_Encoder():speed(0),pprcount(0),angle(0){};
 	void Initialise(uint8_t x);
 	void Init_Interrupts();
 	void Init_Timers();
-	inline void Calc_Speed();
 	inline long int Get_Speed(){return speed;};
 	inline void Set_Speed(int val){speed = val;};
 	inline void incCount(){pprcount++;};
 	inline void dcrCount(){pprcount--;};
 	inline int Get_count(){return pprcount;};
 	inline void Set_count(int val){pprcount = val;};
+	inline void Calc_Speed(){speed = pprcount;pprcount = 0;}; //keep in timer compare match
 };
 
 #endif //__RACK_ENCODER_H__

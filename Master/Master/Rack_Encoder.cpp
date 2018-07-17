@@ -61,9 +61,3 @@ void Rack_Encoder::Init_Timers()
 	}
 }
 
-
-inline void Rack_Encoder::Calc_Speed()				//keep in timer compare match
-{
-	speed = pprcount;
-	pprcount = 0;
-}

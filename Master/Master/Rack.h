@@ -32,6 +32,11 @@
 #define FRACT_INC ((MICROSECONDS_PER_TIMER2_OVERFLOW % 1000) >> 3)
 #define FRACT_MAX (1000 >> 3)
 
+#define  PROXIMITY_PIN		D,2
+#define	 PROXIMITY_INT		INT2
+#define	 PROXIMITY_ISC1		ISC21
+#define	 PROXIMITY_INTF		INTF2
+#define  PROXIMITY_VECT		INT2_vect
 
 #define	  LTSWITCH_RACK_HOME	B,4
 #define	  LTSWITCH_RACK_FINAL	H,6
@@ -42,24 +47,25 @@
 #define	  GENEVA_INTF			INTF3
 #define   GENEVA_VECT			INT3_vect
 
-#define	  RACK_COUNT			-200
-#define	  RACK_POSITION_COUNT	-100
+#define	  RACK_COUNT			 2
+#define	  RACK_POSITION_COUNT	-60
 #define	  RACK_SPEED_MOTOR		249
 
 extern Rack_Motor RackMotor,GenevaMotor;
 extern Rack_Encoder RackEncoder,GenevaEncoder;
-extern PID angle_pid;
+extern PID angle_pid,rack_motor_pid;
 
 extern bool Geneva_Start;
 extern bool Rack_home_position;
-extern bool Buttonx_pressed;
+extern bool auto_move_rack;
 extern bool donotstop;
 extern bool throw_rack;
 extern bool rack_throw_auto;
 extern bool pneumatic_geneva_start;
 extern bool inside_robot;
+extern bool rack_pickup;
 extern bool pass_the_shuttcock;
-extern bool angle_pid_compute;
+extern bool pid_compute_flag;
 
 
 extern unsigned long previous_time;
@@ -71,5 +77,7 @@ extern bool send_time;
 void rack_init();
 void rack_limit_check();
 unsigned long millis();
+void enable_proximity();
+void disable_proximity();
 
 #endif /* DECLARATIONS_H_ */

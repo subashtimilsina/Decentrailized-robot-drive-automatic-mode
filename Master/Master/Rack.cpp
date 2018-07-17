@@ -7,7 +7,6 @@
 #include "Rack.h"
 
 
-
 Rack_Motor RackMotor,GenevaMotor;
 Rack_Encoder RackEncoder,GenevaEncoder;
 
@@ -19,21 +18,22 @@ uint8_t Geneva_count;
 
 bool send_time;
 
-PID angle_pid;
+PID angle_pid,rack_motor_pid;
 
 volatile unsigned long timer2_millis = 0;
 volatile unsigned long timer2_fract = 0;
 
 bool Geneva_Start;
 bool Rack_home_position;
-bool Buttonx_pressed;
+bool auto_move_rack;
 bool donotstop;
 bool throw_rack;
 bool rack_throw_auto;
+bool rack_pickup;
 bool pneumatic_geneva_start;
 bool inside_robot;
 bool pass_the_shuttcock;
-bool angle_pid_compute;
+bool pid_compute_flag;
 
 
 
@@ -51,14 +51,14 @@ void rack_init()
 {
 	
 	Geneva_Start = false;
-	Buttonx_pressed = false;
+	auto_move_rack = false;
 	donotstop = false;
 	throw_rack = false;
 	rack_throw_auto = false;
 	pneumatic_geneva_start = false;
 	inside_robot = true;
     pass_the_shuttcock = false;
-	angle_pid_compute = false;
+	pid_compute_flag = false;
 	
 	pneumatic_geneva_time = 0;
 	send_time = false;
@@ -85,13 +85,20 @@ void rack_init()
 		RackMotor.SetOcrValue(RACK_SPEED_MOTOR);
 	}
 	
-	
-	
 	previous_time = millis();
+	
 	RackMotor.StopMotor();
-	RackEncoder.Set_count(0);
+	
+	RackEncoder.angle =0;
+	
 	Rack_home_position = true;		// true rack home-position -- initial position and false rack position -- final position
 	angle_pid.Set_Pid(47.29,0.139,29.30);
+	rack_motor_pid.Set_Pid(8.67,0,4.89);
+	
+	//Setting the proximity pins
+	INPUT(PROXIMITY_PIN);
+	SET(PROXIMITY_PIN);
+	
 	initialise_timeperiod();
 }
 
@@ -99,32 +106,30 @@ void rack_init()
 void rack_limit_check()
 {
 	
-	if(!READ(LTSWITCH_RACK_HOME) && !Rack_home_position )
+	if(!READ(LTSWITCH_RACK_HOME) && !Rack_home_position )	//if reached home position
 	{
 		RackMotor.StopMotor();
+		rack_motor_pid.Set_SP(0);
 		Rack_home_position = true;
-		RackEncoder.Set_count(0);
-		Buttonx_pressed = false;
-		throw_rack = true;	
+		RackEncoder.angle = 0;
+		auto_move_rack = false;
+		throw_rack = true;
 		previous_time = millis();
 	}
-	if(READ(LTSWITCH_RACK_HOME) && throw_rack && rack_throw_auto)
-	{
-		RackMotor.SetOcrValue(RACK_SPEED_MOTOR);
-	}
 	
-	if(!READ(LTSWITCH_RACK_FINAL) && Buttonx_pressed && donotstop  )		//reached final position
+	if(!READ(LTSWITCH_RACK_FINAL) && auto_move_rack && donotstop  )		//reached final position
 	{
 		RackMotor.StopMotor();
-		Buttonx_pressed = false;
+		rack_motor_pid.Set_SP(0);
+		auto_move_rack = false;
 		donotstop = false;
 		if (rack_throw_auto)
 		{
 			RACK_LIFT_CLOSE();
-			angle_pid.Set_SP(360);
-			Geneva_Start = true;
+			rack_throw_auto = false;
 		}
 	}
+	
 }
 
 void close_all_pneumatics()
@@ -144,7 +149,20 @@ void initialize_pneumatics()
 	close_all_pneumatics();
 }
 
-//calculate the time from beggining of robot start 
+void enable_proximity()
+{
+	EICRB |= (1<<PROXIMITY_ISC1);	//falling edge
+	EIMSK |= (1<<PROXIMITY_INT);		//setting INT pin
+	EIFR |= (1<<PROXIMITY_INTF);	    //clear int flag
+}
+
+void disable_promity()
+{
+	EIMSK &= ~(1<<PROXIMITY_INT);		//setting INT pin
+	EIFR |= (1<<PROXIMITY_INTF);	    //clear int flag
+}
+
+//calculate the time from begining of robot start 
 
 unsigned long millis()
 {
@@ -179,9 +197,13 @@ ISR(INT_VECTR)
 	if(bit_is_clear(ENCODERR_CHAPORTPIN,ENCODERR_CHBPIN))		//ENCODER_CHAPORTPIN,ENCODER_CHBPIN
 	{
 		RackEncoder.incCount();
+		RackEncoder.angle++;
 	}
 	else
-	RackEncoder.dcrCount();
+	{
+		RackEncoder.dcrCount();
+		RackEncoder.angle--;
+	}
 	
 }
 
@@ -202,6 +224,7 @@ ISR(INT_VECTG)
 
 ISR(TIMER4_COMPA_vect)
 {
-	angle_pid_compute = true;
+	pid_compute_flag = true;
+	RackEncoder.Calc_Speed();
 	send_time = true;
 }

@@ -34,7 +34,7 @@ float PID::Compute(int input)
 	return cv;
 }
 
-float PID::angle_Compute(int input)
+float PID::distance_Compute(int input)
 {
 	error = sp - input;
 	

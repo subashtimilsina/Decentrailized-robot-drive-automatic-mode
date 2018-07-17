@@ -12,8 +12,10 @@
 char buffer=0,buffer1=0,buffer3=0;
 unsigned char buffer2=0;
 unsigned char rcvdata[8];
+unsigned char rcv_value_slave;
 static uint8_t datacount;
 volatile bool rcvflag = false;
+volatile bool rcv_slave_flag = false;
 
 
 void initUART0(void)
@@ -62,6 +64,7 @@ void initUART2(void)
 
 void initUART3(void)
 {
+	rcv_value_slave = 0;
 	//set baud rate
 	UBRR3H=(MYUBRR3)>>8;
 	UBRR3L=MYUBRR3;
@@ -232,7 +235,7 @@ ISR(USART2_RX_vect)
 			}
 		}
 		if(buffer2==START_BYTE)
-		rcvflag=true;
+			rcvflag=true;
 		
 }
 
@@ -240,4 +243,12 @@ ISR(USART2_RX_vect)
 ISR(USART3_RX_vect)
 {
 	buffer3=UDR3;
+	
+	if(rcv_slave_flag)
+	{
+		rcv_value_slave = buffer3;
+		rcv_slave_flag = false;
+	}
+	if(buffer3 == START_BYTE_MASTER)
+		rcv_slave_flag = true;
 }

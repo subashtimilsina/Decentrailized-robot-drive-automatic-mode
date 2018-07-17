@@ -27,9 +27,12 @@
 #define MYUBRR0 F_CPU/16/BAUD_RATE0-1
 
 #define TIMEOUT 10
-#define START_BYTE 127
+#define START_BYTE				127
+#define START_BYTE_MASTER		252
 
 extern unsigned char rcvdata[8];
+extern unsigned char rcv_value_slave;
+
 
 #include <avr/io.h>
 #include <avr/interrupt.h>

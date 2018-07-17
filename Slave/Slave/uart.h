@@ -17,7 +17,7 @@
 #define BAUD_RATE3 38400
 #define MYUBRR3 F_CPU/16/BAUD_RATE3-1
 
-#define BAUD_RATE2 38400
+#define BAUD_RATE2 9600
 #define MYUBRR2 F_CPU/16/BAUD_RATE2-1
 
 #define BAUD_RATE1 9600
@@ -28,8 +28,8 @@
 
 #define TIMEOUT 10
 
-#define START_BYTE_AUTO		254
-#define START_BYTE_MANUAL	253
+#define START_BYTE_AUTO			254
+#define START_BYTE_MANUAL		253
 
 extern unsigned char rcvdata[3];
 

@@ -8,8 +8,10 @@
 #include "drive.h"
 
 int8_t coupling_matrix[4][3] = {{-1,1,1},{1,1,1},{-1,1,-1},{1,1,-1}};	//just for the direction so kept 1
-bool pidflag;												 
+bool pidflag;		
+bool count_the_motor;										 
 
+uint16_t counter_motor;
 
  int id,jd;					//global loop counter 
  int velocity_motor[4];		//individual motor velocity
@@ -50,6 +52,8 @@ bool pidflag;
 	 }
 	 ex.Initialise(1);
 	 ey.Initialise(2);
+	 counter_motor = 0;
+	 count_the_motor = false;
  }
  
  
@@ -96,6 +100,15 @@ void reset_robot_velocity()
 	}
 }
 
+void reset_motors()
+{
+	for(id = 0; id<4 ; id++)
+	{
+		m[id].StopMotor();
+		p[id].reset_output();
+	}
+}
+
 
 /*********************************************************************Motors encoders interrupts*****************************************************************/
 
@@ -109,7 +122,8 @@ ISR(INT_VECT1)
 	}
 	else
 		e[0].dcrCount();
-	
+	if(count_the_motor)
+		counter_motor++;
 }
 
 
