@@ -93,7 +93,7 @@ void rack_init()
 	
 	Rack_home_position = true;		// true rack home-position -- initial position and false rack position -- final position
 	angle_pid.Set_Pid(47.29,0.139,29.30);
-	rack_motor_pid.Set_Pid(8.67,0,4.89);
+	rack_motor_pid.Set_Pid(10.67,0,6.89);
 	
 	//Setting the proximity pins
 	INPUT(PROXIMITY_PIN);
@@ -156,7 +156,7 @@ void enable_proximity()
 	EIFR |= (1<<PROXIMITY_INTF);	    //clear int flag
 }
 
-void disable_promity()
+void disable_proximity()
 {
 	EIMSK &= ~(1<<PROXIMITY_INT);		//setting INT pin
 	EIFR |= (1<<PROXIMITY_INTF);	    //clear int flag

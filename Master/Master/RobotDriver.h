@@ -36,11 +36,11 @@
 
 #define STOP_SLAVE			L,2
 
-#define  JUNCTION_PIN		E,5
-#define	 JUNCTION_INT		INT5
-#define	 JUNCTION_ISC1		ISC51
-#define	 JUNCTION_INTF		INTF5
-#define  JUNCTION_VECT		INT5_vect
+#define  JUNCTION_PIN		E,4
+#define	 JUNCTION_INT		INT4
+#define	 JUNCTION_ISC1		ISC41
+#define	 JUNCTION_INTF		INTF4
+#define  JUNCTION_VECT		INT4_vect
 
 
 extern bool auto_mode;

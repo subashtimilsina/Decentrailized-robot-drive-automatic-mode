@@ -37,6 +37,7 @@ void FreeWheelEnc::Init_Interrupts()
 		EIMSK |= (1<<ENCODERX_INT);		//setting INT pin
 		EIFR  |= (1<<INTX_INTF);	    //clear int flag
 	}
+	
 	else if (no==2)
 	{
 		EIMSK &= ~(1<<ENCODERY_INT);

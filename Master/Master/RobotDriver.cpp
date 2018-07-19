@@ -26,7 +26,7 @@ uint8_t counter_i;
 
 bool auto_mode;
 
-enum Task {static_position,Rack_load,Load1,Load2,Search_automaticrobot,Golden_Rack,Give_shutcock,Give_GoldenRack};
+enum Task {static_position,Rack_load,Load1,Load2,Search_automaticrobot,Golden_Rack,Give_shutcock,Give_GoldenRack,enable_line,disable_line};
 	
 enum Location{Loading_zone2 = 1,Loading_zone1,Starting_Zone,Rack_zone,Golden_zone};
 
@@ -53,7 +53,7 @@ void init_master()
 	INPUT(JUNCTION_PIN);
 	SET(JUNCTION_PIN);
 	
-	
+	OUTPUT(STOP_SLAVE);
 	
 	init_timer_ramping();
 	init_LedStrips();
@@ -78,6 +78,7 @@ void operate_master_auto()
 		slave_work_category = Rack_load;
 		auto_move_rack = true;
 		rack_motor_pid.Set_SP(-RACK_COUNT);
+		enable_proximity();
 		GAMEBUTTONA = 0;
 	}
 	else if(GAMEBUTTONA == BUTTON_B)
@@ -131,6 +132,7 @@ void operate_master_auto()
 		RACK_GRIP_CLOSE();
 		rack_pickup = true;
 		rack_picktime = millis();
+		disable_proximity();
 		SLAVE_DATA = 0;
 	}
 	else if(SLAVE_DATA == Golden_zone)
@@ -161,6 +163,16 @@ void operate_master_auto()
 	else if(SLAVE_DATA == Give_GoldenRack)
 	{
 		RACK_GRIP_OPEN();
+		SLAVE_DATA = 0;
+	}
+	else if(SLAVE_DATA == enable_line)
+	{
+		enable_linetracker_interrupt();
+		SLAVE_DATA = 0;
+	}
+	else if(SLAVE_DATA == disable_line)
+	{
+		disable_linetracker_interrupt();
 		SLAVE_DATA = 0;
 	}
 	
@@ -324,7 +336,7 @@ void operate_master_manual()
 }
 
 void operation_of_rack()
-{
+{			
 		if (RackEncoder.angle <= RACK_POSITION_COUNT && Rack_home_position) // if reached at mid-where somewhere
 		{
 			Rack_home_position = false;
@@ -545,4 +557,19 @@ ISR(TIMER0_COMPA_vect)
 	timer_count = 60;
 	
 
+}
+
+/**********************************************************PROXIMITY_INTERRUPT***********************************************************************/
+ISR(PROXIMITY_VECT)
+{
+	//pcint for slave on to stop the robot
+	TOGGLE(STOP_SLAVE);
+}
+
+/*************************************************************Line-tracker junction interrupt****************************************************************/
+
+ISR(JUNCTION_VECT)
+{
+	//pcint for slave for junction
+	TOGGLE(STOP_SLAVE);
 }

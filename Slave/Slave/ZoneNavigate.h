@@ -44,12 +44,14 @@
 #define ADJUST_RPM				 20
 
 #define RAMP_UP_OFFSET			 80
-#define RAMP_DOWN_OFFSET		 25		//20 for rack loading zone
+#define RAMP_DOWN_OFFSET		 25		
 
 #define RAMP_UP_DIST			(distance/9.59)
 #define RAMP_DOWN_DIST			(distance/3.20)
 
 #define START_BYTE_MASTER		252
+
+#define STOP_THE_DRIVE			B,4
 
 #define CALC_DIR(x,y)	(((x-y) < 0)? -1:1)
 
@@ -64,5 +66,7 @@ void move_robot();
 void reset_auto_mode();
 void send_data_to_master(uint8_t dat);
 void Golden_Rack_Place();
+void enable_robot_stop_interrupt();
+void Brake_the_robot();
 
 #endif /* ZONENAVIGATE_H_ */

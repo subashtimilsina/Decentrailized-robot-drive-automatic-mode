@@ -104,7 +104,8 @@ void reset_motors()
 {
 	for(id = 0; id<4 ; id++)
 	{
-		m[id].StopMotor();
+		velocity_motor[id] = 0;
+		velocity_robot[id] = 0;
 		p[id].reset_output();
 	}
 }

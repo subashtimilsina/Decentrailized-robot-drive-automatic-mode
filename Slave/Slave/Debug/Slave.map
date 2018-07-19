@@ -452,7 +452,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000     0x1dc2
+.text           0x00000000     0x1ecc
  *(.vectors)
  .vectors       0x00000000       0xe4 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.150/gcc/dev/atmega2560/avr6/crtatmega2560.o
                 0x00000000                __vector_default
@@ -545,7 +545,6 @@ END GROUP
                 0x00000146                __vector_52
                 0x00000146                __vector_37
                 0x00000146                __vector_44
-                0x00000146                __vector_9
                 0x00000146                __vector_21
                 0x00000146                __vector_15
                 0x00000146                __vector_29
@@ -575,202 +574,211 @@ END GROUP
                 0x000003b6       0x22 drive.o
                 0x000003b6                _Z20reset_robot_velocityv
  .text._Z12reset_motorsv
-                0x000003d8       0x4e drive.o
+                0x000003d8       0x3e drive.o
                 0x000003d8                _Z12reset_motorsv
  .text.__vector_1
-                0x00000426       0x88 drive.o
-                0x00000426                __vector_1
+                0x00000416       0x88 drive.o
+                0x00000416                __vector_1
  .text.__vector_2
-                0x000004ae       0x6e drive.o
-                0x000004ae                __vector_2
+                0x0000049e       0x6e drive.o
+                0x0000049e                __vector_2
  .text.__vector_3
-                0x0000051c       0x6e drive.o
-                0x0000051c                __vector_3
+                0x0000050c       0x6e drive.o
+                0x0000050c                __vector_3
  .text.__vector_4
-                0x0000058a       0x6e drive.o
-                0x0000058a                __vector_4
+                0x0000057a       0x6e drive.o
+                0x0000057a                __vector_4
  .text.__vector_6
-                0x000005f8       0x6e drive.o
-                0x000005f8                __vector_6
+                0x000005e8       0x6e drive.o
+                0x000005e8                __vector_6
  .text.__vector_5
-                0x00000666       0x6e drive.o
-                0x00000666                __vector_5
+                0x00000656       0x6e drive.o
+                0x00000656                __vector_5
  .text.__vector_42
-                0x000006d4       0x9e drive.o
-                0x000006d4                __vector_42
+                0x000006c4       0x9e drive.o
+                0x000006c4                __vector_42
  .text._GLOBAL__sub_I_coupling_matrix
-                0x00000772       0x7a drive.o
+                0x00000762       0x7a drive.o
  .text._ZN7Encoder15Init_InterruptsEv
-                0x000007ec       0x5e Encoder.o
-                0x000007ec                _ZN7Encoder15Init_InterruptsEv
+                0x000007dc       0x5e Encoder.o
+                0x000007dc                _ZN7Encoder15Init_InterruptsEv
  .text._ZN7Encoder11Init_TimersEv
-                0x0000084a       0x38 Encoder.o
-                0x0000084a                _ZN7Encoder11Init_TimersEv
+                0x0000083a       0x38 Encoder.o
+                0x0000083a                _ZN7Encoder11Init_TimersEv
  .text._ZN7Encoder10InitialiseEh
-                0x00000882       0x4c Encoder.o
-                0x00000882                _ZN7Encoder10InitialiseEh
+                0x00000872       0x4c Encoder.o
+                0x00000872                _ZN7Encoder10InitialiseEh
  .text._ZN12FreeWheelEnc15Init_InterruptsEv
-                0x000008ce       0x32 FreeWheelEnc.o
-                0x000008ce                _ZN12FreeWheelEnc15Init_InterruptsEv
+                0x000008be       0x32 FreeWheelEnc.o
+                0x000008be                _ZN12FreeWheelEnc15Init_InterruptsEv
  .text._ZN12FreeWheelEnc10InitialiseEh
-                0x00000900       0x22 FreeWheelEnc.o
-                0x00000900                _ZN12FreeWheelEnc10InitialiseEh
- .text.main     0x00000922       0x20 main.o
-                0x00000922                main
+                0x000008f0       0x22 FreeWheelEnc.o
+                0x000008f0                _ZN12FreeWheelEnc10InitialiseEh
+ .text.main     0x00000912       0x20 main.o
+                0x00000912                main
  .text._ZN5Motor7InitPWMEv
-                0x00000942       0xfc Motor.o
-                0x00000942                _ZN5Motor7InitPWMEv
+                0x00000932       0xfc Motor.o
+                0x00000932                _ZN5Motor7InitPWMEv
  .text._ZN5Motor19SetForwardDirectionEv
-                0x00000a3e       0x62 Motor.o
-                0x00000a3e                _ZN5Motor19SetForwardDirectionEv
+                0x00000a2e       0x62 Motor.o
+                0x00000a2e                _ZN5Motor19SetForwardDirectionEv
  .text._ZN5Motor19SetReverseDirectionEv
-                0x00000aa0       0x62 Motor.o
-                0x00000aa0                _ZN5Motor19SetReverseDirectionEv
+                0x00000a90       0x62 Motor.o
+                0x00000a90                _ZN5Motor19SetReverseDirectionEv
  .text._ZN5Motor9StopMotorEv
-                0x00000b02       0x82 Motor.o
-                0x00000b02                _ZN5Motor9StopMotorEv
+                0x00000af2       0x82 Motor.o
+                0x00000af2                _ZN5Motor9StopMotorEv
  .text._ZN5Motor11SetOcrValueEi
-                0x00000b84       0x76 Motor.o
-                0x00000b84                _ZN5Motor11SetOcrValueEi
+                0x00000b74       0x76 Motor.o
+                0x00000b74                _ZN5Motor11SetOcrValueEi
  .text._ZN5Motor10InitialiseEh
-                0x00000bfa       0x1c Motor.o
-                0x00000bfa                _ZN5Motor10InitialiseEh
+                0x00000bea       0x1c Motor.o
+                0x00000bea                _ZN5Motor10InitialiseEh
  .text._ZN3PID7Set_PidEfff
-                0x00000c16       0x34 PID.o
-                0x00000c16                _ZN3PID7Set_PidEfff
+                0x00000c06       0x34 PID.o
+                0x00000c06                _ZN3PID7Set_PidEfff
  .text._ZN3PID7ComputeEi
-                0x00000c4a       0xe6 PID.o
-                0x00000c4a                _ZN3PID7ComputeEi
+                0x00000c3a       0xec PID.o
+                0x00000c3a                _ZN3PID7ComputeEi
  .text._Z9initUART0v
-                0x00000d30       0x18 uart.o
-                0x00000d30                _Z9initUART0v
+                0x00000d26       0x18 uart.o
+                0x00000d26                _Z9initUART0v
  .text._Z9initUART2v
-                0x00000d48       0x18 uart.o
-                0x00000d48                _Z9initUART2v
+                0x00000d3e       0x18 uart.o
+                0x00000d3e                _Z9initUART2v
  .text._Z9initUART3v
-                0x00000d60       0x18 uart.o
-                0x00000d60                _Z9initUART3v
+                0x00000d56       0x18 uart.o
+                0x00000d56                _Z9initUART3v
  .text._Z13UART3Transmith
-                0x00000d78       0x10 uart.o
-                0x00000d78                _Z13UART3Transmith
+                0x00000d6e       0x10 uart.o
+                0x00000d6e                _Z13UART3Transmith
  .text.__vector_25
-                0x00000d88       0x20 uart.o
-                0x00000d88                __vector_25
+                0x00000d7e       0x20 uart.o
+                0x00000d7e                __vector_25
  .text.__vector_36
-                0x00000da8       0x20 uart.o
-                0x00000da8                __vector_36
+                0x00000d9e       0x20 uart.o
+                0x00000d9e                __vector_36
  .text.__vector_51
-                0x00000dc8       0x20 uart.o
-                0x00000dc8                __vector_51
+                0x00000dbe       0x20 uart.o
+                0x00000dbe                __vector_51
  .text.__vector_54
-                0x00000de8       0x7c uart.o
-                0x00000de8                __vector_54
+                0x00000dde       0x7c uart.o
+                0x00000dde                __vector_54
  .text._Z15reset_auto_modev
-                0x00000e64       0xd6 ZoneNavigate.o
-                0x00000e64                _Z15reset_auto_modev
- .text._Z10init_slavev
-                0x00000f3a        0x8 ZoneNavigate.o
-                0x00000f3a                _Z10init_slavev
+                0x00000e5a       0xea ZoneNavigate.o
+                0x00000e5a                _Z15reset_auto_modev
  .text._Z20operate_slave_manualv
-                0x00000f42       0xc4 ZoneNavigate.o
-                0x00000f42                _Z20operate_slave_manualv
+                0x00000f44       0xc4 ZoneNavigate.o
+                0x00000f44                _Z20operate_slave_manualv
  .text._Z10move_robotv
-                0x00001006       0xec ZoneNavigate.o
-                0x00001006                _Z10move_robotv
+                0x00001008       0xf8 ZoneNavigate.o
+                0x00001008                _Z10move_robotv
  .text._Z17Golden_Rack_Placev
-                0x000010f2       0x5c ZoneNavigate.o
-                0x000010f2                _Z17Golden_Rack_Placev
+                0x00001100       0x5c ZoneNavigate.o
+                0x00001100                _Z17Golden_Rack_Placev
  .text._Z19send_data_to_masterh
-                0x0000114e       0x10 ZoneNavigate.o
-                0x0000114e                _Z19send_data_to_masterh
+                0x0000115c       0x10 ZoneNavigate.o
+                0x0000115c                _Z19send_data_to_masterh
+ .text._Z27enable_robot_stop_interruptv
+                0x0000116c       0x1c ZoneNavigate.o
+                0x0000116c                _Z27enable_robot_stop_interruptv
+ .text._Z10init_slavev
+                0x00001188        0xc ZoneNavigate.o
+                0x00001188                _Z10init_slavev
+ .text._Z15Brake_the_robotv
+                0x00001194       0xba ZoneNavigate.o
+                0x00001194                _Z15Brake_the_robotv
  .text._Z18operate_slave_autov
-                0x0000115e      0x7dc ZoneNavigate.o
-                0x0000115e                _Z18operate_slave_autov
+                0x0000124e      0x788 ZoneNavigate.o
+                0x0000124e                _Z18operate_slave_autov
+ .text.__vector_9
+                0x000019d6       0x6e ZoneNavigate.o
+                0x000019d6                __vector_9
  .text.avr-libc.fplib
-                0x0000193a        0xa c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(addsf3.o)
-                0x0000193a                __subsf3
-                0x0000193c                __addsf3
+                0x00001a44        0xa c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(addsf3.o)
+                0x00001a44                __subsf3
+                0x00001a46                __addsf3
  .text.avr-libc.fplib
-                0x00001944       0xc0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(addsf3x.o)
-                0x0000195e                __addsf3x
+                0x00001a4e       0xc0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(addsf3x.o)
+                0x00001a68                __addsf3x
  .text.avr-libc.fplib
-                0x00001a04        0x8 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(cmpsf2.o)
-                0x00001a04                __nesf2
-                0x00001a04                __eqsf2
-                0x00001a04                __cmpsf2
-                0x00001a04                __ltsf2
-                0x00001a04                __lesf2
+                0x00001b0e        0x8 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(cmpsf2.o)
+                0x00001b0e                __nesf2
+                0x00001b0e                __eqsf2
+                0x00001b0e                __cmpsf2
+                0x00001b0e                __ltsf2
+                0x00001b0e                __lesf2
  .text.avr-libc.fplib
-                0x00001a0c        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(divsf3.o)
-                0x00001a0c                __divsf3
+                0x00001b16        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(divsf3.o)
+                0x00001b16                __divsf3
  .text.avr-libc.fplib
-                0x00001a10       0xcc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(divsf3x.o)
-                0x00001a26                __divsf3x
-                0x00001a2a                __divsf3_pse
+                0x00001b1a       0xcc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(divsf3x.o)
+                0x00001b30                __divsf3x
+                0x00001b34                __divsf3_pse
  .text.avr-libc.fplib
-                0x00001adc        0xa c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fixsfsi.o)
-                0x00001adc                __fixsfsi
+                0x00001be6        0xa c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fixsfsi.o)
+                0x00001be6                __fixsfsi
  .text.avr-libc.fplib
-                0x00001ae6       0x58 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fixunssfsi.o)
-                0x00001ae6                __fixunssfsi
+                0x00001bf0       0x58 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fixunssfsi.o)
+                0x00001bf0                __fixunssfsi
  .text.avr-libc.fplib
-                0x00001b3e       0x7a c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(floatsisf.o)
-                0x00001b3e                __floatunsisf
-                0x00001b42                __floatsisf
+                0x00001c48       0x7a c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(floatsisf.o)
+                0x00001c48                __floatunsisf
+                0x00001c4c                __floatsisf
  .text.avr-libc.fplib
-                0x00001bb8       0x48 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_cmp.o)
-                0x00001bb8                __fp_cmp
+                0x00001cc2       0x48 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_cmp.o)
+                0x00001cc2                __fp_cmp
  .text.avr-libc.fplib
-                0x00001c00        0xc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_inf.o)
-                0x00001c00                __fp_inf
+                0x00001d0a        0xc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_inf.o)
+                0x00001d0a                __fp_inf
  .text.avr-libc.fplib
-                0x00001c0c        0x6 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_nan.o)
-                0x00001c0c                __fp_nan
+                0x00001d16        0x6 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_nan.o)
+                0x00001d16                __fp_nan
  .text.avr-libc.fplib
-                0x00001c12        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_pscA.o)
-                0x00001c12                __fp_pscA
+                0x00001d1c        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_pscA.o)
+                0x00001d1c                __fp_pscA
  .text.avr-libc.fplib
-                0x00001c20        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_pscB.o)
-                0x00001c20                __fp_pscB
+                0x00001d2a        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_pscB.o)
+                0x00001d2a                __fp_pscB
  .text.avr-libc.fplib
-                0x00001c2e       0x22 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_round.o)
-                0x00001c2e                __fp_round
+                0x00001d38       0x22 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_round.o)
+                0x00001d38                __fp_round
  .text.avr-libc.fplib
-                0x00001c50       0x44 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_split3.o)
-                0x00001c50                __fp_split3
-                0x00001c60                __fp_splitA
+                0x00001d5a       0x44 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_split3.o)
+                0x00001d5a                __fp_split3
+                0x00001d6a                __fp_splitA
  .text.avr-libc.fplib
-                0x00001c94        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_zero.o)
-                0x00001c94                __fp_zero
-                0x00001c96                __fp_szero
+                0x00001d9e        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_zero.o)
+                0x00001d9e                __fp_zero
+                0x00001da0                __fp_szero
  .text.avr-libc.fplib
-                0x00001ca2        0x8 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(gesf2.o)
-                0x00001ca2                __gesf2
-                0x00001ca2                __gtsf2
+                0x00001dac        0x8 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(gesf2.o)
+                0x00001dac                __gesf2
+                0x00001dac                __gtsf2
  .text.avr-libc.fplib
-                0x00001caa        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(mulsf3.o)
-                0x00001caa                __mulsf3
+                0x00001db4        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(mulsf3.o)
+                0x00001db4                __mulsf3
  .text.avr-libc.fplib
-                0x00001cae       0xc2 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(mulsf3x.o)
-                0x00001cc2                __mulsf3x
-                0x00001cc6                __mulsf3_pse
+                0x00001db8       0xc2 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(mulsf3x.o)
+                0x00001dcc                __mulsf3x
+                0x00001dd0                __mulsf3_pse
  .text.libgcc.mul
-                0x00001d70        0xc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_mulshisi3.o)
-                0x00001d70                __mulshisi3
-                0x00001d74                __mulohisi3
- .text.libgcc   0x00001d7c       0x10 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_tablejump2.o)
-                0x00001d7c                __tablejump2__
+                0x00001e7a        0xc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_mulshisi3.o)
+                0x00001e7a                __mulshisi3
+                0x00001e7e                __mulohisi3
+ .text.libgcc   0x00001e86       0x10 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_tablejump2.o)
+                0x00001e86                __tablejump2__
  .text.libgcc.mul
-                0x00001d8c       0x14 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_muluhisi3.o)
-                0x00001d8c                __muluhisi3
+                0x00001e96       0x14 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_muluhisi3.o)
+                0x00001e96                __muluhisi3
  .text.libgcc.mul
-                0x00001da0       0x1e c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_umulhisi3.o)
-                0x00001da0                __umulhisi3
-                0x00001dbe                . = ALIGN (0x2)
+                0x00001eaa       0x1e c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_umulhisi3.o)
+                0x00001eaa                __umulhisi3
+                0x00001ec8                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00001dbe        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_exit.o)
-                0x00001dbe                _exit
-                0x00001dbe                exit
+ .fini9         0x00001ec8        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_exit.o)
+                0x00001ec8                _exit
+                0x00001ec8                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -789,11 +797,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00001dbe        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_exit.o)
+ .fini0         0x00001ec8        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_exit.o)
  *(.fini0)
-                0x00001dc2                _etext = .
+                0x00001ecc                _etext = .
 
-.data           0x00800200        0xc load address 0x00001dc2
+.data           0x00800200        0xc load address 0x00001ecc
                 0x00800200                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -808,7 +816,7 @@ END GROUP
                 0x0080020c                _edata = .
                 0x0080020c                PROVIDE (__data_end, .)
 
-.bss            0x0080020c       0xe3
+.bss            0x0080020c       0xe7
                 0x0080020c                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
@@ -868,67 +876,76 @@ END GROUP
  .bss.current_location
                 0x008002ca        0x1 ZoneNavigate.o
                 0x008002ca                current_location
- .bss.go_after_rotate
+ .bss.stop_flag
                 0x008002cb        0x1 ZoneNavigate.o
-                0x008002cb                go_after_rotate
- .bss.rotate_robot
+                0x008002cb                stop_flag
+ .bss.final_step
                 0x008002cc        0x1 ZoneNavigate.o
-                0x008002cc                rotate_robot
- .bss.shift_robot
+                0x008002cc                final_step
+ .bss.go_after_rotate
                 0x008002cd        0x1 ZoneNavigate.o
-                0x008002cd                shift_robot
- .bss.give_shtcock
+                0x008002cd                go_after_rotate
+ .bss.rotate_robot
                 0x008002ce        0x1 ZoneNavigate.o
-                0x008002ce                give_shtcock
- .bss.reset_auto
+                0x008002ce                rotate_robot
+ .bss.shift_robot
                 0x008002cf        0x1 ZoneNavigate.o
-                0x008002cf                reset_auto
- .bss.calculated
+                0x008002cf                shift_robot
+ .bss.give_shtcock
                 0x008002d0        0x1 ZoneNavigate.o
-                0x008002d0                calculated
- .bss.pressed   0x008002d1        0x1 ZoneNavigate.o
-                0x008002d1                pressed
- .bss.Golden_Drop
+                0x008002d0                give_shtcock
+ .bss.reset_auto
+                0x008002d1        0x1 ZoneNavigate.o
+                0x008002d1                reset_auto
+ .bss.calculated
                 0x008002d2        0x1 ZoneNavigate.o
-                0x008002d2                Golden_Drop
- .bss.searching_complete
-                0x008002d3        0x1 ZoneNavigate.o
-                0x008002d3                searching_complete
- .bss.searching
+                0x008002d2                calculated
+ .bss.pressed   0x008002d3        0x1 ZoneNavigate.o
+                0x008002d3                pressed
+ .bss.Golden_Drop
                 0x008002d4        0x1 ZoneNavigate.o
-                0x008002d4                searching
- .bss.moving    0x008002d5        0x1 ZoneNavigate.o
-                0x008002d5                moving
+                0x008002d4                Golden_Drop
+ .bss.searching_complete
+                0x008002d5        0x1 ZoneNavigate.o
+                0x008002d5                searching_complete
+ .bss.searching
+                0x008002d6        0x1 ZoneNavigate.o
+                0x008002d6                searching
+ .bss.moving    0x008002d7        0x1 ZoneNavigate.o
+                0x008002d7                moving
  .bss.next_distance
-                0x008002d6        0x4 ZoneNavigate.o
-                0x008002d6                next_distance
+                0x008002d8        0x4 ZoneNavigate.o
+                0x008002d8                next_distance
  .bss.current_distance
-                0x008002da        0x4 ZoneNavigate.o
-                0x008002da                current_distance
- .bss.distance  0x008002de        0x4 ZoneNavigate.o
-                0x008002de                distance
+                0x008002dc        0x4 ZoneNavigate.o
+                0x008002dc                current_distance
+ .bss.distance  0x008002e0        0x4 ZoneNavigate.o
+                0x008002e0                distance
+ .bss.ramp_down_off_adj
+                0x008002e4        0x2 ZoneNavigate.o
+                0x008002e4                ramp_down_off_adj
  .bss.slopedown
-                0x008002e2        0x4 ZoneNavigate.o
-                0x008002e2                slopedown
- .bss.slopeup   0x008002e6        0x4 ZoneNavigate.o
-                0x008002e6                slopeup
+                0x008002e6        0x4 ZoneNavigate.o
+                0x008002e6                slopedown
+ .bss.slopeup   0x008002ea        0x4 ZoneNavigate.o
+                0x008002ea                slopeup
  .bss.searching_rpm
-                0x008002ea        0x2 ZoneNavigate.o
-                0x008002ea                searching_rpm
- .bss.speed     0x008002ec        0x2 ZoneNavigate.o
-                0x008002ec                speed
- .bss.dir       0x008002ee        0x1 ZoneNavigate.o
-                0x008002ee                dir
+                0x008002ee        0x2 ZoneNavigate.o
+                0x008002ee                searching_rpm
+ .bss.speed     0x008002f0        0x2 ZoneNavigate.o
+                0x008002f0                speed
+ .bss.dir       0x008002f2        0x1 ZoneNavigate.o
+                0x008002f2                dir
  *(COMMON)
-                0x008002ef                PROVIDE (__bss_end, .)
-                0x00001dc2                __data_load_start = LOADADDR (.data)
-                0x00001dce                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x008002f3                PROVIDE (__bss_end, .)
+                0x00001ecc                __data_load_start = LOADADDR (.data)
+                0x00001ed8                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x008002ef        0x0
+.noinit         0x008002f3        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                PROVIDE (__noinit_end, .)
-                0x008002ef                _end = .
+                0x008002f3                _end = .
                 [!provide]                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
@@ -1000,7 +1017,7 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000      0x298
+.debug_aranges  0x00000000      0x2b0
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0x80 drive.o
@@ -1017,59 +1034,59 @@ END GROUP
  .debug_aranges
                 0x00000170       0xd8 uart.o
  .debug_aranges
-                0x00000248       0x50 ZoneNavigate.o
+                0x00000248       0x68 ZoneNavigate.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x3584
+.debug_info     0x00000000     0x3640
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0xbbc C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.150/gcc/dev/atmega2560/avr6/crtatmega2560.o
- .debug_info    0x00000bbc      0xe0e drive.o
- .debug_info    0x000019ca      0x2c8 Encoder.o
- .debug_info    0x00001c92      0x1d3 FreeWheelEnc.o
- .debug_info    0x00001e65      0x186 main.o
- .debug_info    0x00001feb      0x2dc Motor.o
- .debug_info    0x000022c7      0x441 PID.o
- .debug_info    0x00002708      0x76c uart.o
- .debug_info    0x00002e74      0x710 ZoneNavigate.o
+ .debug_info    0x00000bbc      0xdfd drive.o
+ .debug_info    0x000019b9      0x2c8 Encoder.o
+ .debug_info    0x00001c81      0x1d3 FreeWheelEnc.o
+ .debug_info    0x00001e54      0x186 main.o
+ .debug_info    0x00001fda      0x2dc Motor.o
+ .debug_info    0x000022b6      0x441 PID.o
+ .debug_info    0x000026f7      0x76c uart.o
+ .debug_info    0x00002e63      0x7dd ZoneNavigate.o
 
-.debug_abbrev   0x00000000     0x1761
+.debug_abbrev   0x00000000     0x1788
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0xb1a C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.150/gcc/dev/atmega2560/avr6/crtatmega2560.o
- .debug_abbrev  0x00000b1a      0x29c drive.o
- .debug_abbrev  0x00000db6      0x149 Encoder.o
- .debug_abbrev  0x00000eff      0x121 FreeWheelEnc.o
- .debug_abbrev  0x00001020       0x7a main.o
- .debug_abbrev  0x0000109a      0x129 Motor.o
- .debug_abbrev  0x000011c3      0x164 PID.o
- .debug_abbrev  0x00001327      0x1f1 uart.o
- .debug_abbrev  0x00001518      0x249 ZoneNavigate.o
+ .debug_abbrev  0x00000b1a      0x281 drive.o
+ .debug_abbrev  0x00000d9b      0x149 Encoder.o
+ .debug_abbrev  0x00000ee4      0x121 FreeWheelEnc.o
+ .debug_abbrev  0x00001005       0x7a main.o
+ .debug_abbrev  0x0000107f      0x129 Motor.o
+ .debug_abbrev  0x000011a8      0x164 PID.o
+ .debug_abbrev  0x0000130c      0x1f1 uart.o
+ .debug_abbrev  0x000014fd      0x28b ZoneNavigate.o
 
-.debug_line     0x00000000     0x18a5
+.debug_line     0x00000000     0x198e
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x1f9 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.150/gcc/dev/atmega2560/avr6/crtatmega2560.o
- .debug_line    0x000001f9      0x3c1 drive.o
- .debug_line    0x000005ba      0x200 Encoder.o
- .debug_line    0x000007ba      0x151 FreeWheelEnc.o
- .debug_line    0x0000090b       0xaa main.o
- .debug_line    0x000009b5      0x305 Motor.o
- .debug_line    0x00000cba       0xf3 PID.o
- .debug_line    0x00000dad      0x473 uart.o
- .debug_line    0x00001220      0x685 ZoneNavigate.o
+ .debug_line    0x000001f9      0x3bc drive.o
+ .debug_line    0x000005b5      0x200 Encoder.o
+ .debug_line    0x000007b5      0x151 FreeWheelEnc.o
+ .debug_line    0x00000906       0xaa main.o
+ .debug_line    0x000009b0      0x305 Motor.o
+ .debug_line    0x00000cb5       0xf3 PID.o
+ .debug_line    0x00000da8      0x473 uart.o
+ .debug_line    0x0000121b      0x773 ZoneNavigate.o
 
-.debug_frame    0x00000000      0x804
+.debug_frame    0x00000000      0x868
  *(.debug_frame)
- .debug_frame   0x00000000      0x254 drive.o
- .debug_frame   0x00000254       0x50 Encoder.o
- .debug_frame   0x000002a4       0x34 FreeWheelEnc.o
- .debug_frame   0x000002d8       0x24 main.o
- .debug_frame   0x000002fc       0x94 Motor.o
- .debug_frame   0x00000390       0xcc PID.o
- .debug_frame   0x0000045c      0x284 uart.o
- .debug_frame   0x000006e0      0x124 ZoneNavigate.o
+ .debug_frame   0x00000000      0x260 drive.o
+ .debug_frame   0x00000260       0x50 Encoder.o
+ .debug_frame   0x000002b0       0x34 FreeWheelEnc.o
+ .debug_frame   0x000002e4       0x24 main.o
+ .debug_frame   0x00000308       0x94 Motor.o
+ .debug_frame   0x0000039c       0xcc PID.o
+ .debug_frame   0x00000468      0x284 uart.o
+ .debug_frame   0x000006ec      0x17c ZoneNavigate.o
 
-.debug_str      0x00000000     0x13a7
+.debug_str      0x00000000     0x1454
  *(.debug_str)
  .debug_str     0x00000000      0x3e6 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.150/gcc/dev/atmega2560/avr6/crtatmega2560.o
  .debug_str     0x000003e6      0x931 drive.o
@@ -1086,18 +1103,18 @@ END GROUP
                                 0x39f (size before relaxing)
  .debug_str     0x00000e3a      0x312 uart.o
                                 0x528 (size before relaxing)
- .debug_str     0x0000114c      0x25b ZoneNavigate.o
-                                0x69a (size before relaxing)
+ .debug_str     0x0000114c      0x308 ZoneNavigate.o
+                                0x747 (size before relaxing)
 
-.debug_loc      0x00000000     0x1540
+.debug_loc      0x00000000     0x15ba
  *(.debug_loc)
- .debug_loc     0x00000000      0x4d7 drive.o
- .debug_loc     0x000004d7      0x13c Encoder.o
- .debug_loc     0x00000613       0x9b FreeWheelEnc.o
- .debug_loc     0x000006ae      0x36f Motor.o
- .debug_loc     0x00000a1d      0x2bf PID.o
- .debug_loc     0x00000cdc      0x653 uart.o
- .debug_loc     0x0000132f      0x211 ZoneNavigate.o
+ .debug_loc     0x00000000      0x4e9 drive.o
+ .debug_loc     0x000004e9      0x13c Encoder.o
+ .debug_loc     0x00000625       0x9b FreeWheelEnc.o
+ .debug_loc     0x000006c0      0x36f Motor.o
+ .debug_loc     0x00000a2f      0x2bf PID.o
+ .debug_loc     0x00000cee      0x653 uart.o
+ .debug_loc     0x00001341      0x279 ZoneNavigate.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -1117,7 +1134,7 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000      0x218
+.debug_ranges   0x00000000      0x230
  *(.debug_ranges)
  .debug_ranges  0x00000000       0x70 drive.o
  .debug_ranges  0x00000070       0x20 Encoder.o
@@ -1126,7 +1143,7 @@ END GROUP
  .debug_ranges  0x000000b8       0x38 Motor.o
  .debug_ranges  0x000000f0       0x20 PID.o
  .debug_ranges  0x00000110       0xc8 uart.o
- .debug_ranges  0x000001d8       0x40 ZoneNavigate.o
+ .debug_ranges  0x000001d8       0x58 ZoneNavigate.o
 
 .debug_macro
  *(.debug_macro)

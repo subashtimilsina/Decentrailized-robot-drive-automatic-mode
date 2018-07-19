@@ -28,15 +28,15 @@
 #define MILLIS_INC (MICROSECONDS_PER_TIMER2_OVERFLOW / 1000)
 // the fractional number of milliseconds per timer2 overflow. we shift right
 // by three to fit these numbers into a byte. (for the clock speeds we care
-// about - 8 and 16 MHz - this doesn't lose precision.)
+// about 16 MHz - this doesn't lose precision.)
 #define FRACT_INC ((MICROSECONDS_PER_TIMER2_OVERFLOW % 1000) >> 3)
 #define FRACT_MAX (1000 >> 3)
 
-#define  PROXIMITY_PIN		D,2
-#define	 PROXIMITY_INT		INT2
-#define	 PROXIMITY_ISC1		ISC21
-#define	 PROXIMITY_INTF		INTF2
-#define  PROXIMITY_VECT		INT2_vect
+#define  PROXIMITY_PIN		E,5
+#define	 PROXIMITY_INT		INT5
+#define	 PROXIMITY_ISC1		ISC51
+#define	 PROXIMITY_INTF		INTF5
+#define  PROXIMITY_VECT		INT5_vect
 
 #define	  LTSWITCH_RACK_HOME	B,4
 #define	  LTSWITCH_RACK_FINAL	H,6
@@ -47,7 +47,7 @@
 #define	  GENEVA_INTF			INTF3
 #define   GENEVA_VECT			INT3_vect
 
-#define	  RACK_COUNT			 2
+#define	  RACK_COUNT			 3
 #define	  RACK_POSITION_COUNT	-60
 #define	  RACK_SPEED_MOTOR		249
 
