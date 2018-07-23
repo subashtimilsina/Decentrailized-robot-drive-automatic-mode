@@ -30,12 +30,12 @@ class PID
 		inline void Set_D(float kD){kd = kD;};	
 		inline void Set_SP(int sP){sp=sP;};
 		inline int Get_SP(){return sp;};
-		inline void Inc_P(){kp+=0.1;};
+		inline void Inc_P(){kp+=0.01;};
 		inline void Inc_I(){ki+=0.001;};
-		inline void Inc_D(){kd+=0.1;};
-		inline void Dcr_P(){kp-=0.1;};
+		inline void Inc_D(){kd+=0.01;};
+		inline void Dcr_P(){kp-=0.01;};
 		inline void Dcr_I(){ki-=0.001;};
-		inline void Dcr_D(){kd-=0.1;};
+		inline void Dcr_D(){kd-=0.01;};
 		inline float Get_P(){return kp;};
 		inline float Get_I(){return ki;};
 		inline float Get_D(){return kd;};

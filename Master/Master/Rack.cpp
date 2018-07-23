@@ -26,7 +26,8 @@ volatile unsigned long timer2_fract = 0;
 bool Geneva_Start;
 bool Rack_home_position;
 bool auto_move_rack;
-bool donotstop;
+bool stop_rack_initial;
+bool stop_rack_final;
 bool throw_rack;
 bool rack_throw_auto;
 bool rack_pickup;
@@ -52,7 +53,8 @@ void rack_init()
 	
 	Geneva_Start = false;
 	auto_move_rack = false;
-	donotstop = false;
+	stop_rack_initial = false;
+	stop_rack_final = false;
 	throw_rack = false;
 	rack_throw_auto = false;
 	pneumatic_geneva_start = false;
@@ -92,8 +94,8 @@ void rack_init()
 	RackEncoder.angle =0;
 	
 	Rack_home_position = true;		// true rack home-position -- initial position and false rack position -- final position
-	angle_pid.Set_Pid(47.29,0.139,29.30);
-	rack_motor_pid.Set_Pid(10.67,0,6.89);
+	angle_pid.Set_Pid(47.29,0.139,40.30);	//47.29 0.139  29.30
+	rack_motor_pid.Set_Pid(3.08,0,9.89);	//3.08 0 9.89
 	
 	//Setting the proximity pins
 	INPUT(PROXIMITY_PIN);
@@ -106,23 +108,24 @@ void rack_init()
 void rack_limit_check()
 {
 	
-	if(!READ(LTSWITCH_RACK_HOME) && !Rack_home_position )	//if reached home position
+	if(!READ(LTSWITCH_RACK_HOME) && stop_rack_initial)	//if reached home position
 	{
-		RackMotor.StopMotor();
 		rack_motor_pid.Set_SP(0);
-		Rack_home_position = true;
 		RackEncoder.angle = 0;
 		auto_move_rack = false;
+		stop_rack_initial = false;
+		
+		//open rack gripper when reached to home position
 		throw_rack = true;
 		previous_time = millis();
 	}
 	
-	if(!READ(LTSWITCH_RACK_FINAL) && auto_move_rack && donotstop  )		//reached final position
+	if(!READ(LTSWITCH_RACK_FINAL) && stop_rack_final)		//if reached final position
 	{
-		RackMotor.StopMotor();
 		rack_motor_pid.Set_SP(0);
 		auto_move_rack = false;
-		donotstop = false;
+		stop_rack_final = false;
+		
 		if (rack_throw_auto)
 		{
 			RACK_LIFT_CLOSE();
@@ -151,15 +154,16 @@ void initialize_pneumatics()
 
 void enable_proximity()
 {
-	EICRB |= (1<<PROXIMITY_ISC1);	//falling edge
 	EIMSK |= (1<<PROXIMITY_INT);		//setting INT pin
+	EICRB |= (1<<PROXIMITY_ISC1);	//falling edge
 	EIFR |= (1<<PROXIMITY_INTF);	    //clear int flag
 }
 
 void disable_proximity()
 {
-	EIMSK &= ~(1<<PROXIMITY_INT);		//setting INT pin
-	EIFR |= (1<<PROXIMITY_INTF);	    //clear int flag
+	EIFR |= (1<<PROXIMITY_INTF);
+	EIMSK &= ~(1<<PROXIMITY_INT);	
+	EICRB &= ~(1<<PROXIMITY_ISC1);	
 }
 
 //calculate the time from begining of robot start 
@@ -192,20 +196,23 @@ ISR(TIMER2_OVF_vect) {
 	}
 }
 
+//Rack motor using veitnamese motor
 ISR(INT_VECTR)
 {
 	if(bit_is_clear(ENCODERR_CHAPORTPIN,ENCODERR_CHBPIN))		//ENCODER_CHAPORTPIN,ENCODER_CHBPIN
 	{
-		RackEncoder.incCount();
-		RackEncoder.angle++;
-	}
-	else
-	{
 		RackEncoder.dcrCount();
 		RackEncoder.angle--;
 	}
+	else
+	{
+		RackEncoder.incCount();
+		RackEncoder.angle++;
+	}
 	
 }
+
+//geneva motor cytron
 
 ISR(INT_VECTG)
 {

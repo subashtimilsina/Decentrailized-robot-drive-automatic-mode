@@ -24,11 +24,7 @@
 #define clockCyclesPerMicrosecond() ( F_CPU / 1000000L )
 #define clockCyclesToMicroseconds (a) ( ((a) * 1000L) / (F_CPU / 1000L) )
 #define MICROSECONDS_PER_TIMER2_OVERFLOW (clockCyclesToMicroseconds(64 * 256))
-// the whole number of milliseconds per timer2 overflow
 #define MILLIS_INC (MICROSECONDS_PER_TIMER2_OVERFLOW / 1000)
-// the fractional number of milliseconds per timer2 overflow. we shift right
-// by three to fit these numbers into a byte. (for the clock speeds we care
-// about 16 MHz - this doesn't lose precision.)
 #define FRACT_INC ((MICROSECONDS_PER_TIMER2_OVERFLOW % 1000) >> 3)
 #define FRACT_MAX (1000 >> 3)
 
@@ -48,8 +44,8 @@
 #define   GENEVA_VECT			INT3_vect
 
 #define	  RACK_COUNT			 3
-#define	  RACK_POSITION_COUNT	-60
-#define	  RACK_SPEED_MOTOR		249
+#define	  RACK_POSITION_COUNT	-90
+#define	  RACK_SPEED_MOTOR		 50
 
 extern Rack_Motor RackMotor,GenevaMotor;
 extern Rack_Encoder RackEncoder,GenevaEncoder;
@@ -58,7 +54,8 @@ extern PID angle_pid,rack_motor_pid;
 extern bool Geneva_Start;
 extern bool Rack_home_position;
 extern bool auto_move_rack;
-extern bool donotstop;
+extern bool stop_rack_initial;
+extern bool stop_rack_final;
 extern bool throw_rack;
 extern bool rack_throw_auto;
 extern bool pneumatic_geneva_start;

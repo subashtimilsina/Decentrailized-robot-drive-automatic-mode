@@ -14,13 +14,13 @@ int searching_rpm;
 int store_y_count;
 float slopeup,slopedown;
 int ramp_down_off_adj;
+float ramp_up_dist,ramp_down_dist;
 
 Coordinate distance,current_distance,next_distance;
 
 //different task flags
 bool moving;
 bool searching;
-bool searching_complete;
 bool Golden_Drop;
 bool pressed;
 bool calculated;
@@ -31,10 +31,11 @@ bool rotate_robot;
 bool go_after_rotate;
 bool final_step;
 bool stop_flag;
+bool prox_enb;
 
 
 
-enum Task {static_position,Rack_load,Load1,Load2,Search_automaticrobot,Golden_Rack,Give_shutcock,Give_GoldenRack,enable_line,disable_line};
+enum Task {static_position,Rack_load,Load1,Load2,Search_automaticrobot,up_rob,down_rob,Golden_Rack,Give_shutcock,Give_GoldenRack,enable_prox,disable_prox};
 
 enum Location{Loading_zone2 = 1,Loading_zone1,Starting_Zone,Rack_zone,Golden_zone};
 
@@ -72,6 +73,8 @@ void reset_auto_mode()
 	slopeup = 0;
 	slopedown = 0;
 	ramp_down_off_adj = RAMP_DOWN_OFFSET;
+	ramp_up_dist = 0;
+	ramp_down_dist = 0;
 	calculated = false;
 
 	dir = 1;
@@ -81,7 +84,6 @@ void reset_auto_mode()
 	
 	moving = false;
 	searching = false;
-	searching_complete = false;
 	pressed = false;
 	Golden_Drop = false;
 	reset_auto = false;
@@ -91,7 +93,7 @@ void reset_auto_mode()
 	go_after_rotate = false;
 	final_step = false;
 	stop_flag = false;
-	
+	prox_enb = false;
 }
 
 
@@ -112,6 +114,25 @@ void operate_slave_auto()
 {
 	if (!moving && !searching)
 	{
+		//for up and down purpose adjustment
+		if(DATA1 == up_rob)
+		{
+			velocity_robot[0] = -60;
+			velocity_robot[1] = 0;
+			velocity_robot[2] = 0;					
+		}
+		else if(DATA1 == down_rob)
+		{
+			velocity_robot[0] = 60;
+			velocity_robot[1] = 0;
+			velocity_robot[2] = 0;
+		} 
+		else 
+		{
+			if(!Golden_Drop)
+				reset_robot_velocity();
+		}
+			
 		/******************************Data for auto mode from master************************************/
 		if(DATA1 == Rack_load)
 		{
@@ -136,20 +157,8 @@ void operate_slave_auto()
 		}
 		else if (DATA1 == Search_automaticrobot)
 		{
-			if(searching_complete)
-			{
-				velocity_robot[0] = SEARCH_RPM;
-				velocity_robot[1] = 0;
-				velocity_robot[2] = 0;
-			}
-			else
-			{
-				searching = true;
-				ey.Reset_Distance();
-			}
-			
+			searching = true;
 			DATA1 = 0;
-			
 		}
 		else if(DATA1 == Golden_Rack)
 		{
@@ -161,7 +170,7 @@ void operate_slave_auto()
 	if(Golden_Drop)
 	{
 		//move forward to give golden rack
-		if(go_after_rotate && (abs(ex.Get_Distance()) >= AUTOROBOT_DIST) )
+		if(go_after_rotate && (abs(ey.Get_Distance()) >= AUTOROBOT_DIST) )
 		{
 			reset_robot_velocity();
 			rotate_robot = false;
@@ -177,17 +186,17 @@ void operate_slave_auto()
 			{
 				rotate_robot = false;
 				go_after_rotate = true;
-				velocity_robot[0] = 0;
-				velocity_robot[1] = -130;
+				velocity_robot[0] = -100;
+				velocity_robot[1] = 30;
 				velocity_robot[2] = 0;
-				ex.Reset_Distance();
+				ey.Reset_Distance();
 				counter_motor = 0;
 				count_the_motor = false;
 			}
-			else if(counter_motor <= (ROTATE_COUNT >> 1) )
-			{
-				velocity_robot[2] = ((60/1340.0)*counter_motor)-80;
-			}
+			//else if(counter_motor <= (ROTATE_COUNT >> 1) )
+			//{
+				//velocity_robot[2] = ((60/1340.0)*counter_motor)-80;
+			//}
 
 		}		
 		
@@ -201,19 +210,11 @@ void operate_slave_auto()
 			counter_motor = 0;
 			velocity_robot[0] = 0;
 			velocity_robot[1] = 0;
-			velocity_robot[2] = -80;
+			velocity_robot[2] = -100;
 		}
 	
 	}
 	
-	
-	//return back after searching the automatic robot
-	if(searching_complete && ey.Get_Distance() <= 30) //30 band for the ey encoder
-	{
-
-		reset_robot_velocity();
-		searching_complete = false;
-	}
 	
 	/**********************************If moving to different zone then perform ramping************************************/
 	if (moving)
@@ -221,12 +222,12 @@ void operate_slave_auto()
 		//to calculate slope only one time at the start
 			if(!calculated)
 			{
-				slopeup =  (speed-(dir*RAMP_UP_OFFSET))/RAMP_UP_DIST;
-				slopedown = (-((speed-dir*ramp_down_off_adj))/RAMP_DOWN_DIST);
+				slopeup =  (speed-(dir*RAMP_UP_OFFSET))/ramp_up_dist;
+				slopedown = (-((speed-dir*ramp_down_off_adj))/ramp_down_dist);
 				calculated = true;
 			}
 			
-		//if destination is reached interrupt is trigerred by the master
+			//if destination is reached interrupt is trigerred by the master
 			
 			if(stop_flag)
 			{
@@ -237,7 +238,7 @@ void operate_slave_auto()
 			if(abs(ex.Get_Distance()) >= distance)
 			{
 				//stop the robot
-				if(current_location == Starting_Zone && next_location == Rack_zone)
+				if((current_location == Starting_Zone && next_location == Rack_zone) || (current_location == Loading_zone2 && next_location == Golden_zone))
 				{
 					velocity_robot[0] = 0;
 					velocity_robot[1] = -RAMP_DOWN_OFFSET;
@@ -251,23 +252,27 @@ void operate_slave_auto()
 				
 				
 			}
-			else if (abs(ex.Get_Distance()) >= RAMP_UP_DIST && (abs(ex.Get_Distance()) <= (distance-RAMP_DOWN_DIST)))
+			else if (abs(ex.Get_Distance()) >= ramp_up_dist && (abs(ex.Get_Distance()) <= (distance-ramp_down_dist)))
 			{
 				//normal
 				velocity_robot[1] = speed;
-				
 			}
-			else if (abs(ex.Get_Distance()) <= RAMP_UP_DIST)
+			else if (abs(ex.Get_Distance()) <= ramp_up_dist)
 			{
 				//ramp up
 				velocity_robot[1] = dir*((slopeup*ex.Get_Distance())+RAMP_UP_OFFSET);
 			}			
-			else if ((abs(ex.Get_Distance()) <= distance) && (abs(ex.Get_Distance()) >= (distance-RAMP_DOWN_DIST)))
+			else if ((abs(ex.Get_Distance()) <= distance) && (abs(ex.Get_Distance()) >= (distance-ramp_down_dist)))
 			{
 				//ramp down
-					velocity_robot[1] = (dir*(slopedown)*ex.Get_Distance())+(dir*ramp_down_off_adj-(dir*ramp_down_off_adj-speed)*distance/RAMP_DOWN_DIST);
+					if(!prox_enb)
+					{
+						if((current_location == Starting_Zone && next_location == Rack_zone) || (current_location == Loading_zone2 && next_location == Golden_zone))
+							send_data_to_master(enable_prox);
+						prox_enb = true;
+					}
+					velocity_robot[1] = (dir*(slopedown)*ex.Get_Distance())+(dir*ramp_down_off_adj-(dir*ramp_down_off_adj-speed)*distance/ramp_down_dist);
 			}
-			
 			
 	}
 	
@@ -328,7 +333,6 @@ void operate_slave_auto()
 			pressed = false;
 			searching_rpm = SEARCH_RPM;
 			searching = false;
-			searching_complete = true;
 			if(give_shtcock)
 			{
 				send_data_to_master(Give_shutcock);
@@ -391,6 +395,9 @@ void move_robot()
 		ramp_down_off_adj = RAMP_DOWN_OFFSET;
 	}
 		 
+	ramp_up_dist = distance/9.59;
+	ramp_down_dist = distance/3.20;	 
+	
 	current_distance = next_distance;
 }
 
@@ -413,22 +420,25 @@ void Brake_the_robot()
 {
 	distance = 0;
 	moving = false;
+	prox_enb = false;
 	calculated = false;
 	
 	//if reached  different zone different task
-	if(current_location == Rack_zone && next_location == Loading_zone1)
-	{
-		ey.Reset_Distance();
-		searching = true;
-		give_shtcock = true;
-	}
-	else if(current_location == Starting_Zone && next_location == Rack_zone)
+	//if(current_location == Rack_zone && next_location == Loading_zone1)
+	//{
+		//ey.Reset_Distance();
+		//_delay_ms(500);
+		//searching = true;
+		//send_data_to_master(Search_automaticrobot);
+		//give_shtcock = true;
+	//}
+	if(current_location == Starting_Zone && next_location == Rack_zone)
 		send_data_to_master(next_location);
 	else if(current_location == Golden_zone && next_location == Loading_zone1)
 	{
 		ey.Reset_Distance();
 		shift_robot = true;
-		velocity_robot[0] = -SEARCH_RPM;
+		velocity_robot[0] = -130;
 		velocity_robot[1] = 0;
 		velocity_robot[2] = 0;
 		final_step = true;

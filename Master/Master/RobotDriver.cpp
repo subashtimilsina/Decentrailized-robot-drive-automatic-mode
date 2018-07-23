@@ -25,8 +25,11 @@ bool rampupflag_start;									//For ramping_the robot using joystick
 uint8_t counter_i;
 
 bool auto_mode;
+bool search_auto;
+unsigned long search_time;
+unsigned long rack_picktime;
 
-enum Task {static_position,Rack_load,Load1,Load2,Search_automaticrobot,Golden_Rack,Give_shutcock,Give_GoldenRack,enable_line,disable_line};
+enum Task {static_position,Rack_load,Load1,Load2,Search_automaticrobot,up_rob,down_rob,Golden_Rack,Give_shutcock,Give_GoldenRack,enable_prox,disable_prox};
 	
 enum Location{Loading_zone2 = 1,Loading_zone1,Starting_Zone,Rack_zone,Golden_zone};
 
@@ -45,8 +48,11 @@ void init_master()
 	LtState = 0;
 	line_tracker_data = 0;
 	robot_rpm = 9;		// vary from 0 to 100 contains negative number below 50
+	search_time = 0;
+	rack_picktime = 0;
 	
 	auto_mode = false;
+	search_auto = false;
 	rack_pickup = false;
 	//For line tracker pin
 	DDRF = 0X00;	//Setting all the digital pin of linetracker to zero
@@ -61,8 +67,6 @@ void init_master()
 
 void operate_master_auto()
 {
-	static unsigned long rack_picktime = 0;
-	
 	SET(AUTO_LED_STRIP);
 	CLEAR(MANUAL_LED_STRIP);
 	
@@ -78,7 +82,6 @@ void operate_master_auto()
 		slave_work_category = Rack_load;
 		auto_move_rack = true;
 		rack_motor_pid.Set_SP(-RACK_COUNT);
-		enable_proximity();
 		GAMEBUTTONA = 0;
 	}
 	else if(GAMEBUTTONA == BUTTON_B)
@@ -121,12 +124,19 @@ void operate_master_auto()
 	{
 		slave_work_category = Search_automaticrobot;
 		GAMEBUTTONB = 0;
-	}		
+	}	
+	else if(GAMEBUTTONB == UP)
+	{
+		slave_work_category = up_rob;
+	}	
+	else if(GAMEBUTTONB == DOWN)
+	{
+		slave_work_category = down_rob;
+	}
 	
 	//if reached rack loading zone
 	if(SLAVE_DATA == Rack_zone)
 	{
-		auto_move_rack = true;
 		rack_throw_auto = true;
 		SHUTTCOCK_PASS_OPEN();
 		RACK_GRIP_CLOSE();
@@ -138,11 +148,12 @@ void operate_master_auto()
 	else if(SLAVE_DATA == Golden_zone)
 	{
 		RACK_GRIP_CLOSE();
+		disable_proximity();
 		rack_pickup = true;
 		rack_picktime = millis();
 		SLAVE_DATA = 0;
 	}
-	else if(SLAVE_DATA == Give_shutcock)
+	else if(!pass_the_shuttcock && !rack_throw_auto && !pneumatic_geneva_start && SLAVE_DATA == Give_shutcock)
 	{
 		if(inside_robot)
 		{
@@ -165,30 +176,29 @@ void operate_master_auto()
 		RACK_GRIP_OPEN();
 		SLAVE_DATA = 0;
 	}
-	else if(SLAVE_DATA == enable_line)
+	else if(SLAVE_DATA == enable_prox)
 	{
-		enable_linetracker_interrupt();
-		SLAVE_DATA = 0;
-	}
-	else if(SLAVE_DATA == disable_line)
-	{
-		disable_linetracker_interrupt();
+		enable_proximity();		
 		SLAVE_DATA = 0;
 	}
 	
-	//delay for rack pickup
+	
 	if(rack_pickup && (millis()-rack_picktime) >= 500)
 	{
 		RACK_LIFT_OPEN();
+		rack_pickup = false;
 		
 		if(rack_throw_auto)
 		{
+			auto_move_rack = true;
 			rack_motor_pid.Set_SP(RACK_COUNT);
 			slave_work_category = Load1;
-			rack_pickup = false;
-		}	
+		}
 		else
-			slave_work_category = Golden_Rack;	
+		{
+			slave_work_category = Golden_Rack;
+		}
+		
 	}
 	
 	//if not rack auto move stop rack motor
@@ -310,12 +320,12 @@ void operate_master_manual()
 		{
 			rack_motor_pid.Set_SP(RACK_COUNT);
 		}
-		else if (LEFTTRIGGER > 20 )
+		else if (LEFTTRIGGER > 20 && READ(LTSWITCH_RACK_FINAL))
 		{
 			rack_motor_pid.Set_SP(-RACK_COUNT);
 		}
 		else
-		rack_motor_pid.Set_SP(0);
+			rack_motor_pid.Set_SP(0);
 	}
 	
 	/*********************************************************************Move using joystick analog stick********************************************/
@@ -337,12 +347,16 @@ void operate_master_manual()
 
 void operation_of_rack()
 {			
-		if (RackEncoder.angle <= RACK_POSITION_COUNT && Rack_home_position) // if reached at mid-where somewhere
+		if (RackEncoder.angle <= RACK_POSITION_COUNT && Rack_home_position) // if reached at mid-where near to the final position
 		{
 			Rack_home_position = false;
-			donotstop = true;
+			stop_rack_final = true;
+		}	
+		else if(RackEncoder.angle >= RACK_POSITION_COUNT && !Rack_home_position) //near to the home position
+		{
+			Rack_home_position = true;
+			stop_rack_initial = true;
 		}
-		
 		
 		/*******************************************Geneva operation*********************************************/
 		
@@ -378,12 +392,6 @@ void operation_of_rack()
 		
 		/*************************************************Delay operation*****************************************/
 		
-		if (rack_throw_auto && Rack_home_position && (millis()-previous_time)>700)
-		{
-			rack_motor_pid.Set_SP(-RACK_COUNT);
-			auto_move_rack = true;
-		}
-		
 		
 		if(pneumatic_geneva_start && (millis()-pneumatic_geneva_time) > 700)
 		{
@@ -397,12 +405,17 @@ void operation_of_rack()
 			pass_the_shuttcock = false;
 		}
 		
-		if(throw_rack && (millis()-previous_time) >= 700)
+		if(throw_rack && (millis()-previous_time) >= 300)
 		{
 			RACK_GRIP_OPEN();
 			throw_rack = false;
 			if(rack_throw_auto)
 			{
+				//Rack motor return to it's final position
+				rack_motor_pid.Set_SP(-RACK_COUNT);
+				auto_move_rack = true;
+				
+				//Geneva start after rack placement
 				angle_pid.Set_SP(360);
 				Geneva_Start = true;
 			}
@@ -567,9 +580,3 @@ ISR(PROXIMITY_VECT)
 }
 
 /*************************************************************Line-tracker junction interrupt****************************************************************/
-
-ISR(JUNCTION_VECT)
-{
-	//pcint for slave for junction
-	TOGGLE(STOP_SLAVE);
-}

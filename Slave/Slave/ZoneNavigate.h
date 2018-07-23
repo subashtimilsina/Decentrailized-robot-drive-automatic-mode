@@ -13,12 +13,20 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "drive.h"
+#include <util/delay.h>
 #include "headers.h"
 
 /***********************************************Manual mode**************************************************************
 ******************DATA1 -- velocity_robot[0] , DATA2 -- velocity_robot[1] , DATA3 -- velocity_robot[2] ******************
 ************************************************Automatic mode***********************************************************
 ******************DATA1 -- Slave_Work_Category, DATA2 -- Linetracker_Data, DATA3 --	Limit-switch state	*******************/
+
+
+/**************************************************** sign and the direction of robot********************************************/
+// velocity_robot[0]  +ve back  and -ve front
+// velocity_robot[1]  +ve right and -ve left
+// velocity_robot[2]  +ve anti-clockwise and -ve clockwise
+/********************************************************************************************************************************/
 
 #define DATA1	rcvdata[0]
 #define DATA2	rcvdata[1]
@@ -30,12 +38,12 @@
 #define SZONE		2490	//2520
 #define RZONE		0
 #define GLDZONE		-770
-#define LZONE1		(6975 + SZONE)		//9590
+#define LZONE1		(6865 + SZONE)		//6975
 #define LZONE2		(2220 + LZONE1)
 
-#define Y_DISTANCE		1200
-#define ROTATE_COUNT	1340
-#define AUTOROBOT_DIST	1400	
+#define Y_DISTANCE		220
+#define ROTATE_COUNT	670
+#define AUTOROBOT_DIST	2200	
 
 #define Y_COMPONENT_INITIAL		 15	 
 
@@ -45,9 +53,6 @@
 
 #define RAMP_UP_OFFSET			 80
 #define RAMP_DOWN_OFFSET		 25		
-
-#define RAMP_UP_DIST			(distance/9.59)
-#define RAMP_DOWN_DIST			(distance/3.20)
 
 #define START_BYTE_MASTER		252
 
