@@ -15,19 +15,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   5 .debug_aranges 000002b0  00000000  00000000  00001ff0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00003650  00000000  00000000  000022a0  2**0
+  6 .debug_info   0000363e  00000000  00000000  000022a0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000017a3  00000000  00000000  000058f0  2**0
+  7 .debug_abbrev 000017a3  00000000  00000000  000058de  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000019d6  00000000  00000000  00007093  2**0
+  8 .debug_line   000019d6  00000000  00000000  00007081  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000878  00000000  00000000  00008a6c  2**2
+  9 .debug_frame  00000878  00000000  00000000  00008a58  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00001486  00000000  00000000  000092e4  2**0
+ 10 .debug_str    00001478  00000000  00000000  000092d0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000015f7  00000000  00000000  0000a76a  2**0
+ 11 .debug_loc    000015f7  00000000  00000000  0000a748  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000230  00000000  00000000  0000bd61  2**0
+ 12 .debug_ranges 00000230  00000000  00000000  0000bd3f  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -2809,7 +2809,8 @@ void move_robot()
     1052:	10 92 74 02 	sts	0x0274, r1	; 0x800274 <ex+0x3>
     1056:	10 92 75 02 	sts	0x0275, r1	; 0x800275 <ex+0x4>
 	ex.Reset_Distance();
-	velocity_robot[0] = Y_COMPONENT_INITIAL;
+	
+	velocity_robot[0] = Y_COMPONENT_SMALL;
     105a:	e6 ea       	ldi	r30, 0xA6	; 166
     105c:	f2 e0       	ldi	r31, 0x02	; 2
     105e:	8f e0       	ldi	r24, 0x0F	; 15
@@ -2819,6 +2820,7 @@ void move_robot()
 	velocity_robot[2] = 0;
     1066:	15 82       	std	Z+5, r1	; 0x05
     1068:	14 82       	std	Z+4, r1	; 0x04
+	
 	moving = true;
     106a:	81 e0       	ldi	r24, 0x01	; 1
     106c:	80 93 d7 02 	sts	0x02D7, r24	; 0x8002d7 <moving>
@@ -3330,8 +3332,8 @@ void operate_slave_auto()
     13da:	1b 06       	cpc	r1, r27
     13dc:	44 f4       	brge	.+16     	; 0x13ee <_Z18operate_slave_autov+0x146>
     13de:	21 e0       	ldi	r18, 0x01	; 1
-    13e0:	88 39       	cpi	r24, 0x98	; 152
-    13e2:	98 40       	sbci	r25, 0x08	; 8
+    13e0:	84 39       	cpi	r24, 0x94	; 148
+    13e2:	97 40       	sbci	r25, 0x07	; 7
     13e4:	a1 05       	cpc	r26, r1
     13e6:	b1 05       	cpc	r27, r1
     13e8:	84 f4       	brge	.+32     	; 0x140a <_Z18operate_slave_autov+0x162>
@@ -3345,8 +3347,8 @@ void operate_slave_auto()
     13f8:	af 4f       	sbci	r26, 0xFF	; 255
     13fa:	bf 4f       	sbci	r27, 0xFF	; 255
     13fc:	21 e0       	ldi	r18, 0x01	; 1
-    13fe:	88 39       	cpi	r24, 0x98	; 152
-    1400:	98 40       	sbci	r25, 0x08	; 8
+    13fe:	84 39       	cpi	r24, 0x94	; 148
+    1400:	97 40       	sbci	r25, 0x07	; 7
     1402:	a1 05       	cpc	r26, r1
     1404:	b1 05       	cpc	r27, r1
     1406:	0c f4       	brge	.+2      	; 0x140a <_Z18operate_slave_autov+0x162>

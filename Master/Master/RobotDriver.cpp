@@ -81,7 +81,8 @@ void operate_master_auto()
 	{
 		slave_work_category = Rack_load;
 		auto_move_rack = true;
-		rack_motor_pid.Set_SP(-RACK_COUNT);
+		if(Rack_home_position)
+			rack_motor_pid.Set_SP(-RACK_COUNT);
 		GAMEBUTTONA = 0;
 	}
 	else if(GAMEBUTTONA == BUTTON_B)
@@ -191,7 +192,8 @@ void operate_master_auto()
 		if(rack_throw_auto)
 		{
 			auto_move_rack = true;
-			rack_motor_pid.Set_SP(RACK_COUNT);
+			if(!Rack_home_position)
+				rack_motor_pid.Set_SP(RACK_COUNT);
 			slave_work_category = Load1;
 		}
 		else
@@ -287,7 +289,8 @@ void operate_master_manual()
 		rack_throw_auto = true;
 		SHUTTCOCK_PASS_OPEN();
 		RACK_LIFT_OPEN();
-		rack_motor_pid.Set_SP(RACK_COUNT);
+		if(!Rack_home_position)
+			rack_motor_pid.Set_SP(RACK_COUNT);
 		GAMEBUTTONA = 0;
 	}
 	else if (!pass_the_shuttcock && !rack_throw_auto && !pneumatic_geneva_start && GAMEBUTTONA == RIGHT_BUTTON)	

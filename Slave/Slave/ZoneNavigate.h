@@ -39,13 +39,14 @@
 #define RZONE		0
 #define GLDZONE		-770
 #define LZONE1		(6865 + SZONE)		//6975
-#define LZONE2		(2220 + LZONE1)
+#define LZONE2		(2220 + LZONE1)		//2220
 
 #define Y_DISTANCE		220
 #define ROTATE_COUNT	670
-#define AUTOROBOT_DIST	2200	
+#define AUTOROBOT_DIST	1940	
 
-#define Y_COMPONENT_INITIAL		 15	 
+#define Y_COMPONENT_SMALL		 15
+#define Y_COMPONENT_BIG			 30	 
 
 
 #define SEARCH_RPM				 60

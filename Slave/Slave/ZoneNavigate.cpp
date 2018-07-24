@@ -11,7 +11,6 @@
 int8_t dir;
 int speed;
 int searching_rpm;
-int store_y_count;
 float slopeup,slopedown;
 int ramp_down_off_adj;
 float ramp_up_dist,ramp_down_dist;
@@ -378,8 +377,10 @@ void move_robot()
 {
 	dir = CALC_DIR(current_location,next_location);
 	ex.Reset_Distance();
-	velocity_robot[0] = Y_COMPONENT_INITIAL;
+	
+	velocity_robot[0] = Y_COMPONENT_SMALL;
 	velocity_robot[2] = 0;
+	
 	moving = true;
 	
 	distance = abs(next_distance - current_distance);

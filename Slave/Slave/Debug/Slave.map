@@ -123,8 +123,6 @@ Discarded input sections
  .text          0x00000000        0x0 ZoneNavigate.o
  .data          0x00000000        0x0 ZoneNavigate.o
  .bss           0x00000000        0x0 ZoneNavigate.o
- .bss.store_y_count
-                0x00000000        0x2 ZoneNavigate.o
  .text          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(addsf3.o)
  .data          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(addsf3.o)
  .bss           0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(addsf3.o)
@@ -1044,7 +1042,7 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x3650
+.debug_info     0x00000000     0x363e
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0xbbc C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.150/gcc/dev/atmega2560/avr6/crtatmega2560.o
  .debug_info    0x00000bbc      0xdfd drive.o
@@ -1054,7 +1052,7 @@ END GROUP
  .debug_info    0x00001fda      0x2dc Motor.o
  .debug_info    0x000022b6      0x441 PID.o
  .debug_info    0x000026f7      0x76c uart.o
- .debug_info    0x00002e63      0x7ed ZoneNavigate.o
+ .debug_info    0x00002e63      0x7db ZoneNavigate.o
 
 .debug_abbrev   0x00000000     0x17a3
  *(.debug_abbrev)
@@ -1091,7 +1089,7 @@ END GROUP
  .debug_frame   0x00000468      0x284 uart.o
  .debug_frame   0x000006ec      0x18c ZoneNavigate.o
 
-.debug_str      0x00000000     0x1486
+.debug_str      0x00000000     0x1478
  *(.debug_str)
  .debug_str     0x00000000      0x3e6 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.2.150/gcc/dev/atmega2560/avr6/crtatmega2560.o
  .debug_str     0x000003e6      0x941 drive.o
@@ -1108,8 +1106,8 @@ END GROUP
                                 0x3af (size before relaxing)
  .debug_str     0x00000e4a      0x312 uart.o
                                 0x538 (size before relaxing)
- .debug_str     0x0000115c      0x32a ZoneNavigate.o
-                                0x779 (size before relaxing)
+ .debug_str     0x0000115c      0x31c ZoneNavigate.o
+                                0x76b (size before relaxing)
 
 .debug_loc      0x00000000     0x15f7
  *(.debug_loc)
