@@ -14,8 +14,8 @@
 
 #define RACK_GRAB		A,0
 #define LIFT_RACK		A,4
-#define SC_GRIPPER		C,7
-#define SC_PASS			A,6
+#define SC_GRIPPER		A,2
+#define SC_PASS			C,7
 
 
 

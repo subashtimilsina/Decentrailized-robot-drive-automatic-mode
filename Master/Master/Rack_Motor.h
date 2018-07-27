@@ -22,8 +22,8 @@
 //For rack motor
 
 
-#define DD_F5 A,1
-#define DD_B5 A,3
+#define DD_F5 A,3
+#define DD_B5 A,1
 
 #define DD_PWM5			L,5
 #define PWM_TCCRA5		TCCR5A

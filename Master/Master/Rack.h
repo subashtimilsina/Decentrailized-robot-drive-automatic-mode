@@ -36,12 +36,12 @@
 
 #define	  LTSWITCH_RACK_HOME	B,4
 #define	  LTSWITCH_RACK_FINAL	H,6
-#define   GENEVA_LIMIT_SWITCH	D,3
 
-#define	  GENEVA_INT			INT3
-#define	  GENEVA_ISC1			ISC31
-#define	  GENEVA_INTF			INTF3
-#define   GENEVA_VECT			INT3_vect
+#define   GOLDENEYE_PIN			D,2
+#define	  GOLDENEYE_INT			INT2
+#define	  GOLDENEYE_ISC1		ISC21
+#define	  GOLDENEYE_INTF		INTF2
+#define   GOLDENEYE_VECT		INT2_vect
 
 #define	  RACK_COUNT			 3
 #define	  RACK_POSITION_COUNT	-90
@@ -62,19 +62,21 @@ extern bool pneumatic_geneva_start;
 extern bool inside_robot;
 extern bool rack_pickup;
 extern bool pass_the_shuttcock;
-extern bool pid_compute_flag;
+extern volatile bool pid_compute_flag;
 
 
 extern unsigned long previous_time;
 extern unsigned long pneumatic_geneva_time;
 extern unsigned long passing_time;
 
-extern bool send_time;
+extern volatile bool send_time;
 
 void rack_init();
 void rack_limit_check();
 unsigned long millis();
 void enable_proximity();
 void disable_proximity();
+void enable_golden_eye();
+void disable_golden_eye();
 
 #endif /* DECLARATIONS_H_ */

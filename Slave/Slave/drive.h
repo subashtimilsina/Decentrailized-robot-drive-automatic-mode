@@ -25,17 +25,17 @@
 #include "PID.h"
 
 
-extern bool pidflag;
+extern volatile bool pidflag;
  
 extern int id,jd;	
  
  extern PID p[4];
  extern Encoder e[4];
  extern FreeWheelEnc ex,ey;	
- extern bool pidflag;
- extern bool count_the_motor;
+ extern volatile bool pidflag;
+ extern volatile bool count_the_motor;
 
- extern uint16_t counter_motor;
+ extern volatile uint16_t counter_motor;
  
  extern int velocity_robot[4];
 

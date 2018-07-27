@@ -34,7 +34,7 @@ bool prox_enb;
 
 
 
-enum Task {static_position,Rack_load,Load1,Load2,Search_automaticrobot,up_rob,down_rob,Golden_Rack,Give_shutcock,Give_GoldenRack,enable_prox,disable_prox};
+enum Task {static_position,Rack_load,Load1,Load2,Search_automaticrobot,up_rob,down_rob,right_rob,left_rob,Golden_Rack,Give_shutcock,enable_prox,enable_gldprox};
 
 enum Location{Loading_zone2 = 1,Loading_zone1,Starting_Zone,Rack_zone,Golden_zone};
 
@@ -89,7 +89,6 @@ void reset_auto_mode()
 	give_shtcock = false;
 	shift_robot = false;
 	rotate_robot = false;
-	go_after_rotate = false;
 	final_step = false;
 	stop_flag = false;
 	prox_enb = false;
@@ -104,8 +103,8 @@ void operate_slave_manual()
 	if(reset_auto)	//reset auto mode data if sowitched from auto to manual
 		reset_auto_mode();
 		
-	//UART2TransmitData(counter_motor);
-	//UART2TransmitString("\n\r");
+	//UART0TransmitData(ex.Get_Distance());
+	//UART0TransmitString("\n\r");
 	
 }
 
@@ -124,8 +123,20 @@ void operate_slave_auto()
 		{
 			velocity_robot[0] = 60;
 			velocity_robot[1] = 0;
-			velocity_robot[2] = 0;
+			velocity_robot[2] = 0;  
 		} 
+		else if(DATA1 == right_rob)
+		{
+			velocity_robot[0] = 0;
+			velocity_robot[1] = 60;
+			velocity_robot[2] = 0;
+		}
+		else if(DATA1 == left_rob)
+		{
+			velocity_robot[0] = 0;
+			velocity_robot[1] = -60;
+			velocity_robot[2] = 0;
+		}
 		else 
 		{
 			if(!Golden_Drop)
@@ -166,25 +177,15 @@ void operate_slave_auto()
 		}
 	}
 	
-	if(Golden_Drop)
-	{
-		//move forward to give golden rack
-		if(go_after_rotate && (abs(ey.Get_Distance()) >= AUTOROBOT_DIST) )
-		{
-			reset_robot_velocity();
-			rotate_robot = false;
-			final_step = false;
-			send_data_to_master(Give_GoldenRack);
-			Golden_Drop = false;
-		}
-		
+	if(final_step)
+	{	
 		//move forward after rotating
 		if(rotate_robot) 
 		{
 			if(counter_motor >= ROTATE_COUNT)
 			{
 				rotate_robot = false;
-				go_after_rotate = true;
+				//go_after_rotate = true;
 				velocity_robot[0] = -100;
 				velocity_robot[1] = 30;
 				velocity_robot[2] = 0;
@@ -192,15 +193,11 @@ void operate_slave_auto()
 				counter_motor = 0;
 				count_the_motor = false;
 			}
-			//else if(counter_motor <= (ROTATE_COUNT >> 1) )
-			//{
-				//velocity_robot[2] = ((60/1340.0)*counter_motor)-80;
-			//}
 
 		}		
 		
 		//after shifting
-		if(shift_robot && ey.Get_Distance() >= Y_DISTANCE)
+		if(shift_robot)
 		{
 			reset_robot_velocity();
 			shift_robot = false;
@@ -210,6 +207,7 @@ void operate_slave_auto()
 			velocity_robot[0] = 0;
 			velocity_robot[1] = 0;
 			velocity_robot[2] = -100;
+			send_data_to_master(enable_gldprox);	
 		}
 	
 	}
@@ -424,24 +422,21 @@ void Brake_the_robot()
 	prox_enb = false;
 	calculated = false;
 	
-	//if reached  different zone different task
+	/*************************************************************************if reached  different zone different task*****************************/
+	
+	//After lifting the normal rack search automatic robot and give shuttlecock
+	
 	//if(current_location == Rack_zone && next_location == Loading_zone1)
 	//{
-		//ey.Reset_Distance();
-		//_delay_ms(500);
 		//searching = true;
-		//send_data_to_master(Search_automaticrobot);
 		//give_shtcock = true;
 	//}
+	
 	if(current_location == Starting_Zone && next_location == Rack_zone)
 		send_data_to_master(next_location);
 	else if(current_location == Golden_zone && next_location == Loading_zone1)
 	{
-		ey.Reset_Distance();
 		shift_robot = true;
-		velocity_robot[0] = -130;
-		velocity_robot[1] = 0;
-		velocity_robot[2] = 0;
 		final_step = true;
 	}
 	stop_flag = false;
@@ -460,6 +455,13 @@ ISR(PCINT0_vect)
 	{
 		reset_motors();
 		stop_flag = true;
+	}
+	else if(final_step)
+	{
+		reset_motors();
+		rotate_robot = false;
+		final_step = false;
+		Golden_Drop = false;
 	}
 	
 }

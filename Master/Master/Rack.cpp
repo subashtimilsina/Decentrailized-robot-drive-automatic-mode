@@ -16,7 +16,8 @@ unsigned long passing_time;
 
 uint8_t Geneva_count;
 
-bool send_time;
+volatile bool send_time;
+volatile bool pid_compute_flag;
 
 PID angle_pid,rack_motor_pid;
 
@@ -34,7 +35,7 @@ bool rack_pickup;
 bool pneumatic_geneva_start;
 bool inside_robot;
 bool pass_the_shuttcock;
-bool pid_compute_flag;
+
 
 
 
@@ -101,6 +102,10 @@ void rack_init()
 	INPUT(PROXIMITY_PIN);
 	SET(PROXIMITY_PIN);
 	
+	//setting the golden rack drop proximity pin
+	INPUT(GOLDENEYE_PIN);
+	SET(GOLDENEYE_PIN);
+	
 	initialise_timeperiod();
 }
 
@@ -132,7 +137,6 @@ void rack_limit_check()
 			rack_throw_auto = false;
 		}
 	}
-	
 }
 
 void close_all_pneumatics()
@@ -154,16 +158,34 @@ void initialize_pneumatics()
 
 void enable_proximity()
 {
+	uint8_t SREGvalue = SREG;
+	cli();
 	EIMSK |= (1<<PROXIMITY_INT);		//setting INT pin
 	EICRB |= (1<<PROXIMITY_ISC1);	//falling edge
 	EIFR |= (1<<PROXIMITY_INTF);	    //clear int flag
+	SREG = SREGvalue;
 }
 
 void disable_proximity()
 {
 	EIFR |= (1<<PROXIMITY_INTF);
-	EIMSK &= ~(1<<PROXIMITY_INT);	
-	EICRB &= ~(1<<PROXIMITY_ISC1);	
+	EIMSK &= ~(1<<PROXIMITY_INT);		
+}
+
+void enable_golden_eye()
+{
+	uint8_t SREGvalue = SREG;
+	cli();
+	EIMSK |= (1<<GOLDENEYE_INT);		//setting INT pin
+	EICRA |= (1<<GOLDENEYE_ISC1);	//falling edge
+	EIFR |= (1<<GOLDENEYE_INTF);	    //clear int flag
+	SREG = SREGvalue;
+}
+
+void disable_golden_eye()
+{
+	EIFR |= (1<<GOLDENEYE_INTF);
+	EIMSK &= ~(1<<GOLDENEYE_INT);
 }
 
 //calculate the time from begining of robot start 

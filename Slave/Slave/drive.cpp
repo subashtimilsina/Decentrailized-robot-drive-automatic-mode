@@ -8,10 +8,10 @@
 #include "drive.h"
 
 int8_t coupling_matrix[4][3] = {{-1,1,1},{1,1,1},{-1,1,-1},{1,1,-1}};	//just for the direction so kept 1
-bool pidflag;		
-bool count_the_motor;										 
+volatile bool pidflag;		
+volatile bool count_the_motor;										 
 
-uint16_t counter_motor;
+volatile uint16_t counter_motor;
 
  int id,jd;					//global loop counter 
  int velocity_motor[4];		//individual motor velocity

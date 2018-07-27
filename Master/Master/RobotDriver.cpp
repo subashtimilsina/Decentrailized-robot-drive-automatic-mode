@@ -20,7 +20,7 @@ bool val;
 
 
 volatile int8_t timer_count;													//for joystick ramping
-bool rampupflag_start;									//For ramping_the robot using joystick
+volatile bool rampupflag_start;									//For ramping_the robot using joystick
 
 uint8_t counter_i;
 
@@ -29,7 +29,7 @@ bool search_auto;
 unsigned long search_time;
 unsigned long rack_picktime;
 
-enum Task {static_position,Rack_load,Load1,Load2,Search_automaticrobot,up_rob,down_rob,Golden_Rack,Give_shutcock,Give_GoldenRack,enable_prox,disable_prox};
+enum Task {static_position,Rack_load,Load1,Load2,Search_automaticrobot,up_rob,down_rob,right_rob,left_rob,Golden_Rack,Give_shutcock,enable_prox,enable_gldprox};
 	
 enum Location{Loading_zone2 = 1,Loading_zone1,Starting_Zone,Rack_zone,Golden_zone};
 
@@ -134,6 +134,15 @@ void operate_master_auto()
 	{
 		slave_work_category = down_rob;
 	}
+	else if(GAMEBUTTONB == RIGHT)
+	{
+		slave_work_category = right_rob;
+	}
+	else if(GAMEBUTTONB == LEFT)
+	{
+		slave_work_category = left_rob;
+	}
+	
 	
 	//if reached rack loading zone
 	if(SLAVE_DATA == Rack_zone)
@@ -172,14 +181,14 @@ void operate_master_auto()
 		inside_robot = (1^inside_robot);
 		SLAVE_DATA = 0;
 	}
-	else if(SLAVE_DATA == Give_GoldenRack)
-	{
-		RACK_GRIP_OPEN();
-		SLAVE_DATA = 0;
-	}
 	else if(SLAVE_DATA == enable_prox)
 	{
 		enable_proximity();		
+		SLAVE_DATA = 0;
+	}
+	else if(SLAVE_DATA == enable_gldprox)
+	{
+		enable_golden_eye();
 		SLAVE_DATA = 0;
 	}
 	
@@ -463,9 +472,11 @@ void init_LedStrips()
 
 void enable_linetracker_interrupt()
 {	
+	cli();
 	EICRB |= (1<<JUNCTION_ISC1);	//falling edge
 	EIMSK |= (1<<JUNCTION_INT);		//setting INT pin
 	EIFR |= (1<<JUNCTION_INTF);	    //clear int flag
+	sei();
 }
 
 void disable_linetracker_interrupt()
@@ -580,6 +591,13 @@ ISR(PROXIMITY_VECT)
 {
 	//pcint for slave on to stop the robot
 	TOGGLE(STOP_SLAVE);
+}
+
+ISR(GOLDENEYE_VECT)
+{
+	RACK_GRIP_OPEN();
+	TOGGLE(STOP_SLAVE);
+	disable_golden_eye();
 }
 
 /*************************************************************Line-tracker junction interrupt****************************************************************/
