@@ -53,7 +53,7 @@ class Rack_Encoder
 	
 	public:
 	
-	long int angle;
+	volatile long int angle;
 	
 	Rack_Encoder():speed(0),pprcount(0),angle(0){};
 	void Initialise(uint8_t x);

@@ -19,7 +19,7 @@
 /***********************************************Manual mode**************************************************************
 ******************DATA1 -- velocity_robot[0] , DATA2 -- velocity_robot[1] , DATA3 -- velocity_robot[2] ******************
 ************************************************Automatic mode***********************************************************
-******************DATA1 -- Slave_Work_Category, DATA2 -- Linetracker_Data, DATA3 --	Limit-switch state	*******************/
+******************DATA1 -- Slave_Work_Category, DATA2 -- Fence_limit-Switch state, DATA3 --	Limit-switch state	*******************/
 
 
 /**************************************************** sign and the direction of robot********************************************/
@@ -37,7 +37,7 @@
 
 #define SZONE		2490	//2520
 #define RZONE		0
-#define GLDZONE		-770
+#define GLDZONE		-600
 #define LZONE1		(6865 + SZONE)		//6975
 #define LZONE2		(2220 + LZONE1)		//2220
 

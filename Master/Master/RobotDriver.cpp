@@ -12,11 +12,7 @@
 unsigned char velocity_robot[3];
 unsigned char robot_rpm;
 unsigned char LtState;
-
-
-int line_tracker_data;
-uint8_t total_on_sensor;
-bool val;
+unsigned char FenceState;
 
 
 volatile int8_t timer_count;													//for joystick ramping
@@ -29,9 +25,9 @@ bool search_auto;
 unsigned long search_time;
 unsigned long rack_picktime;
 
-enum Task {static_position,Rack_load,Load1,Load2,Search_automaticrobot,up_rob,down_rob,right_rob,left_rob,Golden_Rack,Give_shutcock,enable_prox,enable_gldprox};
+enum Task {static_position,Rack_load,Load1,Load2,Search_automaticrobot,up_rob,down_rob,right_rob,left_rob,Golden_Rack,Give_shutcock,enable_prox,enable_gldprox,Stop_Search};
 	
-enum Location{Loading_zone2 = 1,Loading_zone1,Starting_Zone,Rack_zone,Golden_zone};
+enum Location{No_where,Loading_zone2,Loading_zone1,Starting_Zone,Rack_zone,Golden_zone};
 
 Task  slave_work_category;
 
@@ -46,7 +42,6 @@ void init_master()
 	
 	slave_work_category = static_position;
 	LtState = 0;
-	line_tracker_data = 0;
 	robot_rpm = 9;		// vary from 0 to 100 contains negative number below 50
 	search_time = 0;
 	rack_picktime = 0;
@@ -54,8 +49,8 @@ void init_master()
 	auto_mode = false;
 	search_auto = false;
 	rack_pickup = false;
+	
 	//For line tracker pin
-	DDRF = 0X00;	//Setting all the digital pin of linetracker to zero
 	INPUT(JUNCTION_PIN);
 	SET(JUNCTION_PIN);
 	
@@ -141,6 +136,11 @@ void operate_master_auto()
 	else if(GAMEBUTTONB == LEFT)
 	{
 		slave_work_category = left_rob;
+	}
+	else if(GAMEBUTTONB == BACK_BUTTON)
+	{
+		slave_work_category = Stop_Search;
+		GAMEBUTTONB = 0;
 	}
 	
 	
@@ -245,7 +245,6 @@ void operate_master_manual()
 		velocity_robot[0] = RESETDATA_JOYSTICK + robot_rpm;
 		velocity_robot[1] = RESETDATA_JOYSTICK;
 		velocity_robot[2] = RESETDATA_JOYSTICK;
-		//front_drive = true;
 		
 	}
 	else if (GAMEBUTTONB == DOWN)
@@ -253,7 +252,6 @@ void operate_master_manual()
 		velocity_robot[0] = RESETDATA_JOYSTICK - robot_rpm;
 		velocity_robot[1] = RESETDATA_JOYSTICK;
 		velocity_robot[2] = RESETDATA_JOYSTICK;
-		//back_drive = true;
 	}
 	
 	
@@ -453,17 +451,17 @@ void init_LedStrips()
 	OUTPUT(AUTO_LED_STRIP);
 	OUTPUT(MANUAL_LED_STRIP);
 	OUTPUT(LT1_LED);
-	OUTPUT(LED_3);
+	OUTPUT(LED_1);
 	OUTPUT(LT3_LED);
-	OUTPUT(LED_5);
+	OUTPUT(GOLDEN_LED);
 	OUTPUT(LT2_LED);
 	
 	CLEAR(AUTO_LED_STRIP);
 	CLEAR(MANUAL_LED_STRIP);
 	CLEAR(LT1_LED);
-	CLEAR(LED_3);
+	CLEAR(LED_1);
 	CLEAR(LT3_LED);
-	CLEAR(LED_5);
+	CLEAR(GOLDEN_LED);
 	CLEAR(LT2_LED);
 	
 }
@@ -485,23 +483,6 @@ void disable_linetracker_interrupt()
 	EIFR |= (1<<JUNCTION_INTF);
 }
 
-/**************************************************Get line tracker data and send the value from 10 to 80 or 0 if not found*************************/
-
-char Get_linetracker_data()
-{
-	line_tracker_data = 0;
-	total_on_sensor = 0;
-	for(counter_i=0; counter_i < 8; counter_i++)
-	{
-		val = READ2(F,counter_i);
-		line_tracker_data += (val*(counter_i+1)*10);
-		total_on_sensor += val;
-	}
-	total_on_sensor = (total_on_sensor == 0)?1:total_on_sensor;
-	line_tracker_data = line_tracker_data/total_on_sensor;
-	return line_tracker_data;
-}
-
 /*****************************************Function to send data to slave***************************/
 
 void Send_data_to_Slave()
@@ -510,7 +491,7 @@ void Send_data_to_Slave()
 	{
 		UART3Transmit(START_BYTE_AUTO);
 		UART3Transmit(slave_work_category);
-		UART3Transmit(Get_linetracker_data());
+		UART3Transmit(FenceState);
 		UART3Transmit(LtState);
 		slave_work_category = static_position;
 	}
@@ -565,6 +546,13 @@ void orientation_check()
 			LtState |= (1<<2);
 			SET(LT3_LED);
 		}
+		
+		//fence limit switches
+		if(!READ(LTSWITCH_FENCE_1) && !READ(LTSWITCH_FENCE_2))
+			FenceState = 2;
+		else 
+			FenceState = 0;
+			
 }
 
 

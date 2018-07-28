@@ -24,15 +24,18 @@
 
 #define AUTO_LED_STRIP		G,0
 #define LT2_LED				G,1
-#define LED_3				G,2
+#define LED_1				G,2
 #define LT3_LED				C,0
-#define LED_5				C,2
+#define GOLDEN_LED			C,2
 #define MANUAL_LED_STRIP	C,6
 #define LT1_LED				C,4
 
 #define LTSWITCH_ORIENT_1	B,6
 #define LTSWITCH_ORIENT_2	B,7
 #define LTSWITCH_ORIENT_3	B,5	
+
+#define LTSWITCH_FENCE_1	D,3
+#define LTSWITCH_FENCE_2	H,5
 
 #define STOP_SLAVE			L,2
 

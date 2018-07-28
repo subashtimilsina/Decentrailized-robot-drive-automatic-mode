@@ -20,6 +20,7 @@ Coordinate distance,current_distance,next_distance;
 //different task flags
 bool moving;
 bool searching;
+bool search_fence;
 bool Golden_Drop;
 bool pressed;
 bool calculated;
@@ -34,11 +35,11 @@ bool prox_enb;
 
 
 
-enum Task {static_position,Rack_load,Load1,Load2,Search_automaticrobot,up_rob,down_rob,right_rob,left_rob,Golden_Rack,Give_shutcock,enable_prox,enable_gldprox};
+enum Task {static_position,Rack_load,Load1,Load2,Search_automaticrobot,up_rob,down_rob,right_rob,left_rob,Golden_Rack,Give_shutcock,enable_prox,enable_gldprox,Stop_Search};
 
-enum Location{Loading_zone2 = 1,Loading_zone1,Starting_Zone,Rack_zone,Golden_zone};
+enum Location{No_where,Loading_zone2,Loading_zone1,Starting_Zone,Rack_zone,Golden_zone};
 
-Location current_location,next_location;
+Location current_location,next_location,Goto_zone;
 	
 	
 
@@ -56,6 +57,7 @@ void reset_auto_mode()
 {
 	current_location = Starting_Zone;
 	next_location = Starting_Zone;
+	Goto_zone = No_where;
 	
 	current_distance = SZONE;
 	next_distance = 0;
@@ -83,6 +85,7 @@ void reset_auto_mode()
 	
 	moving = false;
 	searching = false;
+	search_fence = false;
 	pressed = false;
 	Golden_Drop = false;
 	reset_auto = false;
@@ -110,7 +113,7 @@ void operate_slave_manual()
 
 void operate_slave_auto()
 {
-	if (!moving && !searching)
+	if (!moving && !searching && !search_fence)
 	{
 		//for up and down purpose adjustment
 		if(DATA1 == up_rob)
@@ -146,23 +149,20 @@ void operate_slave_auto()
 		/******************************Data for auto mode from master************************************/
 		if(DATA1 == Rack_load)
 		{
-			next_location = Rack_zone;
-			next_distance = RZONE;
-			move_robot();
+			Goto_zone = Rack_zone;
+			search_fence = true;
 			DATA1 = 0;
 		}
 		else if(DATA1 == Load1)
 		{
-			next_location = Loading_zone1;
-			next_distance = LZONE1;
-			move_robot();
+			Goto_zone = Loading_zone1;
+			search_fence = true;
 			DATA1 = 0;
 		}
 		else if (DATA1 == Load2)
 		{
-			next_location = Loading_zone2;
-			next_distance = LZONE2;
-			move_robot();
+			Goto_zone = Loading_zone2;
+			search_fence = true;
 			DATA1 = 0;
 		}
 		else if (DATA1 == Search_automaticrobot)
@@ -171,8 +171,8 @@ void operate_slave_auto()
 			DATA1 = 0;
 		}
 		else if(DATA1 == Golden_Rack)
-		{
-			Golden_Rack_Place();
+		{	
+			Golden_Rack_Place();	
 			DATA1 = 0;
 		}
 	}
@@ -185,7 +185,6 @@ void operate_slave_auto()
 			if(counter_motor >= ROTATE_COUNT)
 			{
 				rotate_robot = false;
-				//go_after_rotate = true;
 				velocity_robot[0] = -100;
 				velocity_robot[1] = 30;
 				velocity_robot[2] = 0;
@@ -210,6 +209,44 @@ void operate_slave_auto()
 			send_data_to_master(enable_gldprox);	
 		}
 	
+	}
+	
+	if(search_fence)
+	{
+		if(DATA2 == 2)
+		{
+			if(Goto_zone == Rack_zone)
+			{
+				next_location = Rack_zone;
+				next_distance = RZONE;
+				move_robot();
+				search_fence = false;
+				Goto_zone = No_where;
+			}
+			else if(Goto_zone == Loading_zone1)
+			{
+				next_location = Loading_zone1;
+				next_distance = LZONE1;
+				move_robot();
+				search_fence = false;
+				Goto_zone = No_where;
+			}
+			else if(Goto_zone == Loading_zone2)
+			{
+				next_location = Loading_zone2;
+				next_distance = LZONE2;
+				move_robot();
+				search_fence = false;
+				Goto_zone = No_where;	
+			}
+		}
+		else 
+		{
+			velocity_robot[0] = SEARCH_RPM;
+			velocity_robot[1] = 0;
+			velocity_robot[2] = 0;
+		}
+		
 	}
 	
 	
@@ -276,11 +313,19 @@ void operate_slave_auto()
 	//Search the automatic robot
 	if(searching)
 	{
+		if(DATA1 == Stop_Search)
+		{
+			reset_robot_velocity();
+			pressed = false;
+			searching = false;
+			DATA1 = 0;
+		}
+		
 		if(DATA3 == 0)
 		{
 			velocity_robot[0] = -searching_rpm;
 			velocity_robot[1] = 0;
-			velocity_robot[2] = 0;
+			velocity_robot[2] = 0;				
 		}
 		else if(DATA3 == 1)
 		{
