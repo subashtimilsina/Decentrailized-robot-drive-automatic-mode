@@ -40,11 +40,12 @@
 #define   GOLDENEYE_PIN			D,2
 #define	  GOLDENEYE_INT			INT2
 #define	  GOLDENEYE_ISC1		ISC21
+#define   GOLDENEYE_ISC0		ISC20
 #define	  GOLDENEYE_INTF		INTF2
 #define   GOLDENEYE_VECT		INT2_vect
 
 #define	  RACK_COUNT			 3
-#define	  RACK_POSITION_COUNT	-90
+#define	  RACK_POSITION_COUNT	 -90//100
 #define	  RACK_SPEED_MOTOR		 50
 
 extern Rack_Motor RackMotor,GenevaMotor;
@@ -62,7 +63,10 @@ extern bool pneumatic_geneva_start;
 extern bool inside_robot;
 extern bool rack_pickup;
 extern bool pass_the_shuttcock;
+
 extern volatile bool pid_compute_flag;
+extern volatile bool proximity_on_flag;
+extern volatile bool Goldeneye_on_flag;
 
 
 extern unsigned long previous_time;

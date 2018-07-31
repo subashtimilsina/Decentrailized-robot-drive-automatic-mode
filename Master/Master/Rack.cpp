@@ -19,6 +19,9 @@ uint8_t Geneva_count;
 volatile bool send_time;
 volatile bool pid_compute_flag;
 
+volatile bool proximity_on_flag;
+volatile bool Goldeneye_on_flag;
+
 PID angle_pid,rack_motor_pid;
 
 volatile unsigned long timer2_millis = 0;
@@ -62,6 +65,10 @@ void rack_init()
 	inside_robot = true;
     pass_the_shuttcock = false;
 	pid_compute_flag = false;
+					
+	
+	proximity_on_flag = false;
+	Goldeneye_on_flag = false;
 	
 	pneumatic_geneva_time = 0;
 	send_time = false;
@@ -87,14 +94,13 @@ void rack_init()
 	{
 		RackMotor.SetOcrValue(RACK_SPEED_MOTOR);
 	}
+	Rack_home_position = true;  // true rack home-position -- initial position and false rack position -- final position
 	
 	previous_time = millis();
 	
-	RackMotor.StopMotor();
 	
 	RackEncoder.angle =0;
 	
-	Rack_home_position = true;		// true rack home-position -- initial position and false rack position -- final position
 	angle_pid.Set_Pid(47.29,0.139,40.30);	//47.29 0.139  29.30
 	rack_motor_pid.Set_Pid(3.08,0,9.89);	//3.08 0 9.89
 	
@@ -106,6 +112,8 @@ void rack_init()
 	INPUT(GOLDENEYE_PIN);
 	SET(GOLDENEYE_PIN);
 	
+
+	
 	initialise_timeperiod();
 }
 
@@ -115,8 +123,8 @@ void rack_limit_check()
 	
 	if(!READ(LTSWITCH_RACK_HOME) && stop_rack_initial)	//if reached home position
 	{
-		rack_motor_pid.Set_SP(0);
 		RackEncoder.angle = 0;
+		rack_motor_pid.Set_SP(0);
 		auto_move_rack = false;
 		stop_rack_initial = false;
 		
@@ -127,6 +135,7 @@ void rack_limit_check()
 	
 	if(!READ(LTSWITCH_RACK_FINAL) && stop_rack_final)		//if reached final position
 	{
+		
 		rack_motor_pid.Set_SP(0);
 		auto_move_rack = false;
 		stop_rack_final = false;
@@ -137,6 +146,8 @@ void rack_limit_check()
 			rack_throw_auto = false;
 		}
 	}
+	//UART0TransmitData(RackEncoder.angle);
+	//UART0TransmitString("\n\r");
 }
 
 void close_all_pneumatics()
@@ -158,12 +169,11 @@ void initialize_pneumatics()
 
 void enable_proximity()
 {
-	uint8_t SREGvalue = SREG;
 	cli();
 	EIMSK |= (1<<PROXIMITY_INT);		//setting INT pin
-	EICRB |= (1<<PROXIMITY_ISC1);	//falling edge
+	EICRB |= (1<<PROXIMITY_ISC1);	    //falling edge
 	EIFR |= (1<<PROXIMITY_INTF);	    //clear int flag
-	SREG = SREGvalue;
+	sei();
 }
 
 void disable_proximity()
@@ -174,12 +184,11 @@ void disable_proximity()
 
 void enable_golden_eye()
 {
-	uint8_t SREGvalue = SREG;
 	cli();
-	EIMSK |= (1<<GOLDENEYE_INT);		//setting INT pin
-	EICRA |= (1<<GOLDENEYE_ISC1);	//falling edge
-	EIFR |= (1<<GOLDENEYE_INTF);	    //clear int flag
-	SREG = SREGvalue;
+	EIMSK |= (1<<GOLDENEYE_INT);						//setting INT pin
+	EICRA |= ((1<<GOLDENEYE_ISC1)|(1<<GOLDENEYE_ISC0));	//rising  edge
+	EIFR |= (1<<GOLDENEYE_INTF);						//clear int flag
+	sei();
 }
 
 void disable_golden_eye()
@@ -241,7 +250,6 @@ ISR(INT_VECTG)
 	if(bit_is_clear(ENCODERG_CHAPORTPIN,ENCODERG_CHBPIN))		//ENCODER_CHAPORTPIN,ENCODER_CHBPIN
 	{
 		GenevaEncoder.angle++;
-		
 	}
 	else
 	{

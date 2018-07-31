@@ -35,18 +35,18 @@
 //calculating distance count using formula : (destination/WHEEL_CIRCUMFERENCE)*PPR;
 /***********RZ -- 2265mm, LZ1 -- 6974mm, LZ2 --9196 mm  Wheel_circumference d=57.9323 then pi*d=182 ---- d =58 then pi*d = 58*3.141592 = 182.21237*** 11 count = 10 mm********/
 
-#define SZONE		2490	//2520
+#define SZONE		2520	//2520
 #define RZONE		0
-#define GLDZONE		-600
+#define GLDZONE		-800
 #define LZONE1		(6865 + SZONE)		//6975
 #define LZONE2		(2220 + LZONE1)		//2220
 
 #define Y_DISTANCE		220
-#define ROTATE_COUNT	800			//1340
+#define ROTATE_COUNT	700			//1340  //800
 #define AUTOROBOT_DIST	1940	
 
 #define Y_COMPONENT_SMALL		 15
-#define Y_COMPONENT_BIG			 30	 
+#define Y_COMPONENT_BIG			 20	 
 
 
 #define SEARCH_RPM				 60

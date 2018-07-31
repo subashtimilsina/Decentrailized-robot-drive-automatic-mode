@@ -24,7 +24,7 @@
 
 #define AUTO_LED_STRIP		G,0
 #define LT2_LED				G,1
-#define LED_1				G,2
+#define RACK_DETECT_LED		G,2
 #define LT3_LED				C,0
 #define GOLDEN_LED			C,2
 #define MANUAL_LED_STRIP	C,6
@@ -59,5 +59,6 @@ void orientation_check();
 void operation_of_rack();
 void operate_master_manual();
 void operate_master_auto();
+void reset_automode();
 
 #endif /* ROBOTDRIVER_H_ */

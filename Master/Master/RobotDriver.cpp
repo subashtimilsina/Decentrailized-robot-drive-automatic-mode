@@ -20,12 +20,16 @@ volatile bool rampupflag_start;									//For ramping_the robot using joystick
 
 uint8_t counter_i;
 
+volatile bool golden_rack_throw;
+bool open_the_grip;
 bool auto_mode;
 bool search_auto;
-unsigned long search_time;
-unsigned long rack_picktime;
+bool reset_auto;
 
-enum Task {static_position,Rack_load,Load1,Load2,Search_automaticrobot,up_rob,down_rob,right_rob,left_rob,Golden_Rack,Give_shutcock,enable_prox,enable_gldprox,Stop_Search};
+unsigned long rack_picktime;
+unsigned long rack_throw_time;
+
+enum Task {static_position,Rack_load,Load1,Load2,Search_automaticrobot,up_rob,down_rob,right_rob,left_rob,Golden_Rack,Give_shutcock,enable_prox,enable_gldprox,Stop_Search,Go_after_throw};
 	
 enum Location{No_where,Loading_zone2,Loading_zone1,Starting_Zone,Rack_zone,Golden_zone};
 
@@ -35,20 +39,11 @@ Task  slave_work_category;
 
 
 void init_master()
-{
-	velocity_robot[0] = RESETDATA_JOYSTICK;
-	velocity_robot[1] = RESETDATA_JOYSTICK;
-	velocity_robot[2] = RESETDATA_JOYSTICK;
-	
-	slave_work_category = static_position;
+{	
 	LtState = 0;
 	robot_rpm = 9;		// vary from 0 to 100 contains negative number below 50
-	search_time = 0;
-	rack_picktime = 0;
 	
 	auto_mode = false;
-	search_auto = false;
-	rack_pickup = false;
 	
 	//For line tracker pin
 	INPUT(JUNCTION_PIN);
@@ -56,12 +51,33 @@ void init_master()
 	
 	OUTPUT(STOP_SLAVE);
 	
+	reset_automode();
+	
 	init_timer_ramping();
 	init_LedStrips();
 }
 
+void reset_automode()
+{
+	velocity_robot[0] = RESETDATA_JOYSTICK;
+	velocity_robot[1] = RESETDATA_JOYSTICK;
+	velocity_robot[2] = RESETDATA_JOYSTICK;
+	
+	slave_work_category = static_position;
+	
+	rack_picktime = 0;
+	rack_throw_time = 0;
+	
+	search_auto = false;
+	rack_pickup = false;
+	golden_rack_throw = false;
+	open_the_grip = false;
+	reset_auto = false;
+}
+
 void operate_master_auto()
 {
+	reset_auto = true;
 	SET(AUTO_LED_STRIP);
 	CLEAR(MANUAL_LED_STRIP);
 	
@@ -71,27 +87,45 @@ void operate_master_auto()
 		auto_mode = false;
 		GAMEBUTTONA = 0;
 	}
-	//Automatic zone navigation
+	//Automatic-- zone navigation
 	else if(GAMEBUTTONA == BUTTON_A)
 	{
-		slave_work_category = Rack_load;
-		auto_move_rack = true;
 		if(Rack_home_position)
+		{
 			rack_motor_pid.Set_SP(-RACK_COUNT);
+			auto_move_rack = true;
+		}
+		slave_work_category = Rack_load;
 		GAMEBUTTONA = 0;
 	}
 	else if(GAMEBUTTONA == BUTTON_B)
 	{
+		if(Rack_home_position)
+		{
+			rack_motor_pid.Set_SP(-RACK_COUNT);
+			auto_move_rack = true;
+		}
 		slave_work_category = Load1;
 		GAMEBUTTONA = 0;
 	}
 	else if (GAMEBUTTONA == BUTTON_X)
 	{
+		if(Rack_home_position)
+		{
+			rack_motor_pid.Set_SP(-RACK_COUNT);
+			auto_move_rack = true;
+		}
 		slave_work_category = Load2;
 		GAMEBUTTONA = 0;
 	}
 	else if (GAMEBUTTONA == BUTTON_Y)
 	{
+		SET(GOLDEN_LED);
+		if(Rack_home_position)
+		{
+			rack_motor_pid.Set_SP(-RACK_COUNT);
+			auto_move_rack = true;
+		}
 		slave_work_category = Golden_Rack;
 		GAMEBUTTONA = 0;
 	}
@@ -152,12 +186,14 @@ void operate_master_auto()
 		RACK_GRIP_CLOSE();
 		rack_pickup = true;
 		rack_picktime = millis();
+		CLEAR(RACK_DETECT_LED);
 		disable_proximity();
 		SLAVE_DATA = 0;
 	}
 	else if(SLAVE_DATA == Golden_zone)
 	{
 		RACK_GRIP_CLOSE();
+		CLEAR(RACK_DETECT_LED);
 		disable_proximity();
 		rack_pickup = true;
 		rack_picktime = millis();
@@ -183,7 +219,8 @@ void operate_master_auto()
 	}
 	else if(SLAVE_DATA == enable_prox)
 	{
-		enable_proximity();		
+		enable_proximity();	
+		SET(RACK_DETECT_LED);	
 		SLAVE_DATA = 0;
 	}
 	else if(SLAVE_DATA == enable_gldprox)
@@ -200,9 +237,11 @@ void operate_master_auto()
 		
 		if(rack_throw_auto)
 		{
-			auto_move_rack = true;
 			if(!Rack_home_position)
+			{
 				rack_motor_pid.Set_SP(RACK_COUNT);
+				auto_move_rack = true;
+			}
 			slave_work_category = Load1;
 		}
 		else
@@ -216,6 +255,21 @@ void operate_master_auto()
 	if(!auto_move_rack)
 		rack_motor_pid.Set_SP(0);
 		
+	if(golden_rack_throw)
+	{
+		open_the_grip = true;
+		rack_throw_time = millis();
+		golden_rack_throw = false;
+	}
+	
+	if(open_the_grip && (millis()-rack_throw_time) >= 500)
+	{
+		RACK_GRIP_OPEN();
+		CLEAR(GOLDEN_LED);
+		slave_work_category = Go_after_throw;
+		open_the_grip = false;
+	}
+		
 	operation_of_rack();
 	rack_limit_check();
 	orientation_check();
@@ -227,6 +281,9 @@ void operate_master_manual()
 	/**********************************************GAMEBUTTONB_SECTION*********************************/
 	SET(MANUAL_LED_STRIP);
 	CLEAR(AUTO_LED_STRIP);
+	
+	if(reset_auto)
+		reset_automode();	
 	
 	if (GAMEBUTTONB == RIGHT)
 	{
@@ -292,12 +349,14 @@ void operate_master_manual()
 	}
 	else if (GAMEBUTTONA == RIGHT_STICK_CLICK && !Rack_home_position)
 	{
-		auto_move_rack = true;
 		rack_throw_auto = true;
 		SHUTTCOCK_PASS_OPEN();
 		RACK_LIFT_OPEN();
 		if(!Rack_home_position)
+		{
 			rack_motor_pid.Set_SP(RACK_COUNT);
+			auto_move_rack = true;
+		}
 		GAMEBUTTONA = 0;
 	}
 	else if (!pass_the_shuttcock && !rack_throw_auto && !pneumatic_geneva_start && GAMEBUTTONA == RIGHT_BUTTON)	
@@ -349,7 +408,7 @@ void operate_master_manual()
 	else
 	rampupflag_start = false;
 	
-	operation_of_rack();	
+	operation_of_rack();
 	rack_limit_check();
 	orientation_check();
 
@@ -451,7 +510,7 @@ void init_LedStrips()
 	OUTPUT(AUTO_LED_STRIP);
 	OUTPUT(MANUAL_LED_STRIP);
 	OUTPUT(LT1_LED);
-	OUTPUT(LED_1);
+	OUTPUT(RACK_DETECT_LED);
 	OUTPUT(LT3_LED);
 	OUTPUT(GOLDEN_LED);
 	OUTPUT(LT2_LED);
@@ -459,7 +518,7 @@ void init_LedStrips()
 	CLEAR(AUTO_LED_STRIP);
 	CLEAR(MANUAL_LED_STRIP);
 	CLEAR(LT1_LED);
-	CLEAR(LED_1);
+	CLEAR(RACK_DETECT_LED);
 	CLEAR(LT3_LED);
 	CLEAR(GOLDEN_LED);
 	CLEAR(LT2_LED);
@@ -583,9 +642,10 @@ ISR(PROXIMITY_VECT)
 
 ISR(GOLDENEYE_VECT)
 {
-	RACK_GRIP_OPEN();
+	golden_rack_throw = true;
 	TOGGLE(STOP_SLAVE);
 	disable_golden_eye();
 }
 
 /*************************************************************Line-tracker junction interrupt****************************************************************/
+
