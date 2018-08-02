@@ -33,6 +33,7 @@ volatile bool final_step;
 volatile bool stop_flag;
 bool line_track_enable;
 bool after_move_back;
+bool donot_stop_on_line;
 
 
 enum Task {static_position,Rack_load,Load1,Load2,Search_automaticrobot,up_rob,down_rob,right_rob,left_rob,Golden_Rack,Give_shutcock,enable_prox,enable_gldprox,Stop_Search,Go_after_throw,enable_Jpulse};
@@ -96,6 +97,7 @@ void reset_auto_mode()
 	stop_flag = false;
 	line_track_enable = false;
 	after_move_back = false;
+	donot_stop_on_line = false;
 }
 
 
@@ -278,7 +280,7 @@ void operate_slave_auto()
 				calculated = true;
 			}
 			
-			if(!line_track_enable && (abs(ex.Get_Distance()) >= (distance-LINETRACK_ENB_DIST)))
+			if(!line_track_enable && !donot_stop_on_line && (abs(ex.Get_Distance()) >= (distance-LINETRACK_ENB_DIST)))
 			{
 				if(next_location == Rack_zone || next_location == Golden_zone)
 				{
@@ -302,9 +304,17 @@ void operate_slave_auto()
 			if(abs(ex.Get_Distance()) >= distance)
 			{
 				//stop the robot
+				if(donot_stop_on_line)
+				{
+					Brake_the_robot();
+					donot_stop_on_line = false;
+				}
+				else
+				{
 					velocity_robot[0] = 0;
 					velocity_robot[1] = dir*RAMP_DOWN_OFFSET;
 					velocity_robot[2] = 0;
+				}
 			}
 			else if (abs(ex.Get_Distance()) >= ramp_up_dist && (abs(ex.Get_Distance()) <= (distance-ramp_down_dist)))
 			{
@@ -427,6 +437,7 @@ void Golden_Rack_Place()
 		next_location = Loading_zone1;
 		next_distance = LZONE1;
 		move_robot();
+		donot_stop_on_line = true;
 	}
 
 }
