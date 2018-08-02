@@ -90,16 +90,21 @@ void rack_init()
 	initialize_pneumatics();
 	
 	//home position of rack rotate
-	while(READ(LTSWITCH_RACK_HOME))
+	while(READ(LTSWITCH_RACK_FINAL))
 	{
-		RackMotor.SetOcrValue(RACK_SPEED_MOTOR);
+		RackMotor.SetOcrValue(-RACK_SPEED_MOTOR);
 	}
-	Rack_home_position = true;  // true rack home-position -- initial position and false rack position -- final position
+	Rack_home_position = false;  // true rack home-position -- initial position and false rack position -- final position
 	
 	previous_time = millis();
 	
 	
 	RackEncoder.angle =0;
+	
+	while(RackEncoder.angle <= 135)
+	{
+		RackMotor.SetOcrValue(RACK_SPEED_MOTOR);
+	}
 	
 	angle_pid.Set_Pid(47.29,0.139,40.30);	//47.29 0.139  29.30
 	rack_motor_pid.Set_Pid(3.08,0,9.89);	//3.08 0 9.89
@@ -123,7 +128,6 @@ void rack_limit_check()
 	
 	if(!READ(LTSWITCH_RACK_HOME) && stop_rack_initial)	//if reached home position
 	{
-		RackEncoder.angle = 0;
 		rack_motor_pid.Set_SP(0);
 		auto_move_rack = false;
 		stop_rack_initial = false;
@@ -135,7 +139,7 @@ void rack_limit_check()
 	
 	if(!READ(LTSWITCH_RACK_FINAL) && stop_rack_final)		//if reached final position
 	{
-		
+		RackEncoder.angle = 0;
 		rack_motor_pid.Set_SP(0);
 		auto_move_rack = false;
 		stop_rack_final = false;
@@ -146,8 +150,6 @@ void rack_limit_check()
 			rack_throw_auto = false;
 		}
 	}
-	//UART0TransmitData(RackEncoder.angle);
-	//UART0TransmitString("\n\r");
 }
 
 void close_all_pneumatics()
@@ -186,7 +188,7 @@ void enable_golden_eye()
 {
 	cli();
 	EIMSK |= (1<<GOLDENEYE_INT);						//setting INT pin
-	EICRA |= ((1<<GOLDENEYE_ISC1)|(1<<GOLDENEYE_ISC0));	//rising  edge
+	EICRA |= (1<<GOLDENEYE_ISC1);						//falling  edge
 	EIFR |= (1<<GOLDENEYE_INTF);						//clear int flag
 	sei();
 }

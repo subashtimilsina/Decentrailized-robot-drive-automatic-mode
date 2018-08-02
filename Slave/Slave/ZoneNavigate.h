@@ -41,9 +41,10 @@
 #define LZONE1		(6865 + SZONE)		//6975
 #define LZONE2		(2220 + LZONE1)		//2220
 
-#define Y_DISTANCE		220
-#define ROTATE_COUNT	700			//1340  //800
-#define AUTOROBOT_DIST	1940	
+#define Y_DISTANCE			220
+#define ROTATE_COUNT		700			//1340  //800
+#define AUTOROBOT_DIST		1940	
+#define LINETRACK_ENB_DIST	800
 
 #define Y_COMPONENT_SMALL		 15
 #define Y_COMPONENT_BIG			 20	 

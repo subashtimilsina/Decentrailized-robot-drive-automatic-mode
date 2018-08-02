@@ -31,11 +31,11 @@ bool rotate_robot;
 bool go_after_rotate;
 volatile bool final_step;
 volatile bool stop_flag;
-bool prox_enb;
+bool line_track_enable;
 bool after_move_back;
 
 
-enum Task {static_position,Rack_load,Load1,Load2,Search_automaticrobot,up_rob,down_rob,right_rob,left_rob,Golden_Rack,Give_shutcock,enable_prox,enable_gldprox,Stop_Search,Go_after_throw};
+enum Task {static_position,Rack_load,Load1,Load2,Search_automaticrobot,up_rob,down_rob,right_rob,left_rob,Golden_Rack,Give_shutcock,enable_prox,enable_gldprox,Stop_Search,Go_after_throw,enable_Jpulse};
 
 enum Location{No_where,Loading_zone2,Loading_zone1,Starting_Zone,Rack_zone,Golden_zone};
 
@@ -94,7 +94,7 @@ void reset_auto_mode()
 	rotate_robot = false;
 	final_step = false;
 	stop_flag = false;
-	prox_enb = false;
+	line_track_enable = false;
 	after_move_back = false;
 }
 
@@ -278,6 +278,19 @@ void operate_slave_auto()
 				calculated = true;
 			}
 			
+			if(!line_track_enable && (abs(ex.Get_Distance()) >= (distance-LINETRACK_ENB_DIST)))
+			{
+				if(next_location == Rack_zone || next_location == Golden_zone)
+				{
+					send_data_to_master(enable_prox);
+				}
+				else 
+				{
+					send_data_to_master(enable_Jpulse);
+				}
+				line_track_enable = true;
+			}
+			
 			//if destination is reached interrupt is trigerred by the master
 			
 			if(stop_flag)
@@ -289,19 +302,9 @@ void operate_slave_auto()
 			if(abs(ex.Get_Distance()) >= distance)
 			{
 				//stop the robot
-				if((current_location == Starting_Zone && next_location == Rack_zone) || (current_location == Loading_zone2 && next_location == Golden_zone)||(current_location == Starting_Zone && next_location == Golden_zone))
-				{
 					velocity_robot[0] = 0;
-					velocity_robot[1] = -RAMP_DOWN_OFFSET;
+					velocity_robot[1] = dir*RAMP_DOWN_OFFSET;
 					velocity_robot[2] = 0;
-				}
-				else
-				{
-					reset_motors();	
-					Brake_the_robot();
-				}
-				
-				
 			}
 			else if (abs(ex.Get_Distance()) >= ramp_up_dist && (abs(ex.Get_Distance()) <= (distance-ramp_down_dist)))
 			{
@@ -316,14 +319,9 @@ void operate_slave_auto()
 			else if ((abs(ex.Get_Distance()) <= distance) && (abs(ex.Get_Distance()) >= (distance-ramp_down_dist)))
 			{
 				//ramp down
-					if(!prox_enb)
-					{
-						if((current_location == Starting_Zone && next_location == Rack_zone) || (current_location == Loading_zone2 && next_location == Golden_zone)||(current_location == Starting_Zone && next_location == Golden_zone))
-							send_data_to_master(enable_prox);
-						prox_enb = true;
-					}
 					velocity_robot[1] = (dir*(slopedown)*ex.Get_Distance())+(dir*ramp_down_off_adj-(dir*ramp_down_off_adj-speed)*distance/ramp_down_dist);
 			}
+			
 			
 	}
 	
@@ -347,9 +345,9 @@ void operate_slave_auto()
 		}
 		else if(DATA3 == 1)
 		{
-			velocity_robot[0] = 0;
-			velocity_robot[1] = 0;
-			velocity_robot[2] = -searching_rpm;
+			velocity_robot[0] = -searching_rpm;
+			velocity_robot[1] = searching_rpm - 5;
+			velocity_robot[2] = 0;
 			pressed = true;
 		}	
 		else if (DATA3 == 2)
@@ -361,8 +359,8 @@ void operate_slave_auto()
 		}
 		else if(DATA3 == 4)
 		{
-			velocity_robot[0] = -searching_rpm;
-			velocity_robot[1] = 0;
+			velocity_robot[0] = 0;
+			velocity_robot[1] = -searching_rpm;
 			velocity_robot[2] = 0;
 			pressed = true;
 		}
@@ -483,8 +481,8 @@ void Brake_the_robot()
 {
 	distance = 0;
 	moving = false;
-	prox_enb = false;
 	calculated = false;
+	line_track_enable = false;
 	
 	/*************************************************************************if reached  different zone different task*****************************/
 	

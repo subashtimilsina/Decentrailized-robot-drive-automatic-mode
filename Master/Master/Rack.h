@@ -45,7 +45,7 @@
 #define   GOLDENEYE_VECT		INT2_vect
 
 #define	  RACK_COUNT			 3
-#define	  RACK_POSITION_COUNT	 -90//100
+#define	  RACK_POSITION_COUNT	 100	//-90
 #define	  RACK_SPEED_MOTOR		 50
 
 extern Rack_Motor RackMotor,GenevaMotor;

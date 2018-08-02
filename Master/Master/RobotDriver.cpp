@@ -29,7 +29,7 @@ bool reset_auto;
 unsigned long rack_picktime;
 unsigned long rack_throw_time;
 
-enum Task {static_position,Rack_load,Load1,Load2,Search_automaticrobot,up_rob,down_rob,right_rob,left_rob,Golden_Rack,Give_shutcock,enable_prox,enable_gldprox,Stop_Search,Go_after_throw};
+enum Task {static_position,Rack_load,Load1,Load2,Search_automaticrobot,up_rob,down_rob,right_rob,left_rob,Golden_Rack,Give_shutcock,enable_prox,enable_gldprox,Stop_Search,Go_after_throw,enable_Jpulse};
 	
 enum Location{No_where,Loading_zone2,Loading_zone1,Starting_Zone,Rack_zone,Golden_zone};
 
@@ -51,7 +51,20 @@ void init_master()
 	
 	OUTPUT(STOP_SLAVE);
 	
-	reset_automode();
+	velocity_robot[0] = RESETDATA_JOYSTICK;
+	velocity_robot[1] = RESETDATA_JOYSTICK;
+	velocity_robot[2] = RESETDATA_JOYSTICK;
+	
+	slave_work_category = static_position;
+	
+	rack_picktime = 0;
+	rack_throw_time = 0;
+	
+	search_auto = false;
+	rack_pickup = false;
+	golden_rack_throw = false;
+	open_the_grip = false;
+	reset_auto = false;
 	
 	init_timer_ramping();
 	init_LedStrips();
@@ -73,6 +86,10 @@ void reset_automode()
 	golden_rack_throw = false;
 	open_the_grip = false;
 	reset_auto = false;
+	
+	disable_proximity();
+	disable_golden_eye();
+	disable_linetracker_interrupt();
 }
 
 void operate_master_auto()
@@ -186,14 +203,14 @@ void operate_master_auto()
 		RACK_GRIP_CLOSE();
 		rack_pickup = true;
 		rack_picktime = millis();
-		CLEAR(RACK_DETECT_LED);
+		CLEAR(DETECTION_LED);
 		disable_proximity();
 		SLAVE_DATA = 0;
 	}
 	else if(SLAVE_DATA == Golden_zone)
 	{
 		RACK_GRIP_CLOSE();
-		CLEAR(RACK_DETECT_LED);
+		CLEAR(DETECTION_LED);
 		disable_proximity();
 		rack_pickup = true;
 		rack_picktime = millis();
@@ -220,12 +237,18 @@ void operate_master_auto()
 	else if(SLAVE_DATA == enable_prox)
 	{
 		enable_proximity();	
-		SET(RACK_DETECT_LED);	
+		SET(DETECTION_LED);	
 		SLAVE_DATA = 0;
 	}
 	else if(SLAVE_DATA == enable_gldprox)
 	{
 		enable_golden_eye();
+		SLAVE_DATA = 0;
+	}
+	else if(SLAVE_DATA == enable_Jpulse)
+	{
+		enable_linetracker_interrupt();
+		SET(DETECTION_LED);	
 		SLAVE_DATA = 0;
 	}
 	
@@ -415,7 +438,7 @@ void operate_master_manual()
 }
 
 void operation_of_rack()
-{			
+{								//100
 		if (RackEncoder.angle <= RACK_POSITION_COUNT && Rack_home_position) // if reached at mid-where near to the final position
 		{
 			Rack_home_position = false;
@@ -510,7 +533,7 @@ void init_LedStrips()
 	OUTPUT(AUTO_LED_STRIP);
 	OUTPUT(MANUAL_LED_STRIP);
 	OUTPUT(LT1_LED);
-	OUTPUT(RACK_DETECT_LED);
+	OUTPUT(DETECTION_LED);
 	OUTPUT(LT3_LED);
 	OUTPUT(GOLDEN_LED);
 	OUTPUT(LT2_LED);
@@ -518,7 +541,7 @@ void init_LedStrips()
 	CLEAR(AUTO_LED_STRIP);
 	CLEAR(MANUAL_LED_STRIP);
 	CLEAR(LT1_LED);
-	CLEAR(RACK_DETECT_LED);
+	CLEAR(DETECTION_LED);
 	CLEAR(LT3_LED);
 	CLEAR(GOLDEN_LED);
 	CLEAR(LT2_LED);
@@ -649,3 +672,9 @@ ISR(GOLDENEYE_VECT)
 
 /*************************************************************Line-tracker junction interrupt****************************************************************/
 
+ISR(JUNCTION_VECT)
+{
+	TOGGLE(STOP_SLAVE);
+	CLEAR(DETECTION_LED);
+	disable_linetracker_interrupt();
+}
