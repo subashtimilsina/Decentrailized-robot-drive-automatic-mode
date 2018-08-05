@@ -15,8 +15,8 @@
 	//For motor 1
 
 
-    #define DD_F1 K,1
-    #define DD_B1 K,0
+    #define DD_F1 K,0
+    #define DD_B1 K,1
 	
 
     #define DD_PWM1			L,3
@@ -38,8 +38,8 @@
 
     //For motor 2
 
-    #define DD_F2 K,3
-    #define DD_B2 K,2
+    #define DD_F2 K,2
+    #define DD_B2 K,3
 
     #define DD_PWM2			L,4
     #define PWM_TCCRA2		TCCR5A
@@ -60,8 +60,8 @@
 
 //For motor 3
 
-    #define DD_F3 K,4
-    #define DD_B3 K,5
+    #define DD_F3 K,5
+    #define DD_B3 K,4
 
     #define DD_PWM3			L,5
     #define PWM_TCCRA3		TCCR5A
@@ -83,8 +83,8 @@
 
 //For motor 4
 
-    #define DD_F4 K,6
-    #define DD_B4 K,7
+    #define DD_F4 K,7
+    #define DD_B4 K,6
 
     #define DD_PWM4			E,3
     #define PWM_TCCRA4		TCCR3A

@@ -293,12 +293,7 @@ void operate_slave_auto()
 				line_track_enable = true;
 			}
 			
-			//if destination is reached interrupt is trigerred by the master
-			
-			if(stop_flag)
-			{
-				Brake_the_robot();
-			}
+
 			
 			//if destination is reached
 			if(abs(ex.Get_Distance()) >= distance)
@@ -332,6 +327,11 @@ void operate_slave_auto()
 					velocity_robot[1] = (dir*(slopedown)*ex.Get_Distance())+(dir*ramp_down_off_adj-(dir*ramp_down_off_adj-speed)*distance/ramp_down_dist);
 			}
 			
+			//if destination is reached interrupt is trigerred by the master
+			if(stop_flag)
+			{
+				Brake_the_robot();
+			}
 			
 	}
 	
@@ -530,8 +530,5 @@ ISR(PCINT0_vect)
 		stop_flag = true;
 	}
 	else if(final_step)
-	{
 		reset_motors();
-	}
-	
 }
